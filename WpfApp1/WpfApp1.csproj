@@ -100,6 +100,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\BusyIndicator.cs" />
     <Compile Include="Interfaces\IExcelViewer.cs" />
     <Compile Include="Interfaces\IShell.cs" />
     <Compile Include="ViewModels\ExcelViewerViewModel.cs" />
@@ -144,11 +145,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controls\" />
-    <Folder Include="Dictionaries\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dictionaries\ControlsDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ExcelViewerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
