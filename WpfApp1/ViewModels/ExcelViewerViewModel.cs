@@ -1,25 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using EPPlus.Extensions;
+using ExcelCombinator.CoreHelpers;
+using ExcelCombinator.Models.Interfaces;
 using Microsoft.Win32;
 using OfficeOpenXml;
-using WpfApp1.Interfaces;
-using Xceed.Wpf.Toolkit;
 
-namespace WpfApp1.ViewModels
+namespace ExcelCombinator.ViewModels
 {
-    [Export(typeof(IExcelViewer))]
     public class ExcelViewerViewModel : PropertyChangedBase, IExcelViewer
     {
-        private bool _isBusy;
         private string _fileLocation;
         private ObservableCollection<string> _sheets;
+        private readonly IEventAggregator _eventAggregator;
+        private DataSet _excelData;
+        private string _selectedSheet;
+        private bool _isParsed;
+
+        public ExcelViewerViewModel(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+        }
 
         public ObservableCollection<string> Sheets
         {
@@ -31,15 +38,18 @@ namespace WpfApp1.ViewModels
             }
         }
 
-        public bool IsBusy
+        public string SelectedSheet
         {
-            get => _isBusy;
+            get => _selectedSheet;
             set
             {
-                _isBusy = value;
+                _selectedSheet = value;
                 NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => PreviewData);
             }
         }
+
+        public DataTable PreviewData => _excelData?.Tables[SelectedSheet];
 
         public string FileLocation
         {
@@ -51,9 +61,19 @@ namespace WpfApp1.ViewModels
             }
         }
 
+        public bool IsParsed
+        {
+            get => _isParsed;
+            set
+            {
+                _isParsed = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
         public bool CanOpenFile => true;
 
-        public void OpenFile()
+        public async Task OpenFile()
         {
             var ofd = new OpenFileDialog { Filter = "Ficheros excel (*.xlsx)|*.xlsx" };
             var result = ofd.ShowDialog();
@@ -61,8 +81,21 @@ namespace WpfApp1.ViewModels
             if (!result.HasValue || !result.Value) return;
             FileLocation = ofd.FileName;
 
-            using (var xlPackage = new ExcelPackage(new FileInfo(FileLocation)))
-                Sheets = new ObservableCollection<string>(xlPackage.Workbook.Worksheets.Select(x => x.Name));
+            _eventAggregator.PublishOnUIThread(new BusyMessage {IsBusy = true, Message = "Leyendo fichero"});
+
+            await Task.Run(() =>
+            {
+                using (var xlPackage = new ExcelPackage(new FileInfo(FileLocation)))
+                {
+                    Sheets = new ObservableCollection<string>(xlPackage.Workbook.Worksheets.Select(x => x.Name));
+                    _excelData = xlPackage.ToDataSet(false);
+                    SelectedSheet = Sheets.FirstOrDefault();
+                }
+
+                _eventAggregator.PublishOnUIThread(new BusyMessage { IsBusy = false });
+                IsParsed = true;
+            });
         }
     }
 }
+

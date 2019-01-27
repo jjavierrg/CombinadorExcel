@@ -1,4 +1,4 @@
-﻿namespace WpfApp1.Interfaces
+﻿namespace ExcelCombinator.Models.Interfaces
 {
     public interface IExcelViewer
     {

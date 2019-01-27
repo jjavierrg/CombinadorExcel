@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 
-namespace WpfApp1.Views
+namespace ExcelCombinator.Views
 {
     /// <summary>
     /// Interaction logic for ShellView.xaml

@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
-using WpfApp1.Interfaces;
-using WpfApp1.ViewModels;
+using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.ViewModels;
 
-namespace WpfApp1
+namespace ExcelCombinator
 {
     public class AppBootstrapper : BootstrapperBase
     {
