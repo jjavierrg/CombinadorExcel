@@ -5,15 +5,26 @@
                  xmlns:controls="clr-namespace:ExcelCombinator.Controls"
                  xmlns:cal="http://www.caliburnproject.org"
                  GlowBrush="{DynamicResource AccentColorBrush}"
+                 xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                 dialog:DialogParticipation.Register="{Binding}"
                       Title="{Binding WindowCaption}"
                       WindowStartupLocation="CenterScreen">
     <controls:BusyIndicator IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="400" />
             </Grid.ColumnDefinitions>
-            <mah:MetroAnimatedTabControl mah:TabControlHelper.Underlined="TabPanel" >
+            <Menu Grid.Row="0" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                <MenuItem Header="Tema"
+                      ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}"
+                      ItemsSource="{Binding AccentColors, Mode=OneWay}" />
+            </Menu>
+            <mah:MetroAnimatedTabControl Grid.Row="1" Grid.Column="0" mah:TabControlHelper.Underlined="TabPanel" >
                 <mah:MetroTabItem Header="Origen">
                     <ContentControl Margin="10" cal:View.Model="{Binding OriginExcelViewerVm}" />
                 </mah:MetroTabItem>
@@ -21,13 +32,40 @@
                     <ContentControl Margin="10" cal:View.Model="{Binding DestinyExcelViewerVm}" />
                 </mah:MetroTabItem>
             </mah:MetroAnimatedTabControl>
-            <Grid Grid.Column="1">
+            <Grid Grid.Row="1" Grid.Column="1" Margin="10, 1">
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Campos a completar" Style="{DynamicResource TitleStyle}" />
+                <ListBox Grid.Row="2" ItemsSource="{Binding ColumnsRelations}" Style="{DynamicResource RelationListbox}" />
+                <Separator Grid.Row="1" />
+                <Label Grid.Row="3" Content="Campos de enlace" Style="{DynamicResource TitleStyle}" />
+                <Separator Grid.Row="4" />
+                <ListBox Grid.Row="5" ItemsSource="{Binding KeyRelations}" Style="{DynamicResource RelationListbox}" />
+                <Grid Grid.Row="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{DynamicResource LabelStyle}" Text="Origen: " />
+                    <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding OriginExcelViewerVm.ColumnsNames}" SelectedValue="{Binding OriginColumn}" />
+                    <TextBlock Grid.Column="2" Grid.Row="0" Style="{DynamicResource LabelStyle}" Text="Destino: " />
+                    <ComboBox Grid.Column="3" Grid.Row="0" ItemsSource="{Binding DestinyExcelViewerVm.ColumnsNames}" SelectedValue="{Binding DestinyColumn}" />
+                    <Button x:Name="AddRelation" IsEnabled="{Binding CanAddRelation}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="Añadir Completar" HorizontalAlignment="Stretch" cal:Message.Attach="AddRelation" />
+                    <Button x:Name="AddKey" IsEnabled="{Binding CanAddRelation}" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Content="Añadir Enlace" HorizontalAlignment="Stretch" cal:Message.Attach="AddKey" />
+                </Grid>
             </Grid>
         </Grid>
     </controls:BusyIndicator>

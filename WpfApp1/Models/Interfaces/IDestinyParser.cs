@@ -5,6 +5,6 @@ namespace ExcelCombinator.Models.Interfaces
 {
     public interface IDestinyParser: IParser
     {
-        void Process(ExcelWorksheets excel, IDictionary<IKey, IDictionary<string, string>> values);
+        bool Process(IDictionary<IKey, IDictionary<string, string>> values);
     }
 }

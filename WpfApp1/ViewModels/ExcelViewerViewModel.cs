@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Data;
@@ -6,9 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using EPPlus.Extensions;
 using ExcelCombinator.CoreHelpers;
 using ExcelCombinator.Models.Interfaces;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using OfficeOpenXml;
 
@@ -22,11 +23,17 @@ namespace ExcelCombinator.ViewModels
         private DataSet _excelData;
         private string _selectedSheet;
         private bool _isParsed;
+        private const int MAX_PREVIEW_ROWS = 20;
 
         public ExcelViewerViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
+            ColumnsNames = new BindableCollection<string>();
         }
+
+        public string Path => FileLocation;
+
+        public IObservableCollection<string> ColumnsNames { get; }
 
         public ObservableCollection<string> Sheets
         {
@@ -88,13 +95,57 @@ namespace ExcelCombinator.ViewModels
                 using (var xlPackage = new ExcelPackage(new FileInfo(FileLocation)))
                 {
                     Sheets = new ObservableCollection<string>(xlPackage.Workbook.Worksheets.Select(x => x.Name));
-                    _excelData = xlPackage.ToDataSet(false);
+                    _excelData = ParseExcel(xlPackage);
                     SelectedSheet = Sheets.FirstOrDefault();
                 }
 
                 _eventAggregator.PublishOnUIThread(new BusyMessage { IsBusy = false });
-                IsParsed = true;
+                IsParsed = _excelData != null;
             });
+        }
+
+        private DataSet ParseExcel(ExcelPackage package)
+        {
+            if (package == null) return null;
+
+            try
+            {
+                var result = new DataSet();
+
+                foreach (var sheet in package.Workbook.Worksheets)
+                {
+                    var table = new DataTable { TableName = sheet.Name };
+                    var totalRows = Math.Min(sheet.Dimension.End.Row, MAX_PREVIEW_ROWS);
+                    ColumnsNames.Clear();
+
+                    for (var columnIndex=sheet.Dimension.Start.Column; columnIndex <= sheet.Dimension.End.Column; columnIndex++)
+                    {
+                        var columnName = ExcelCellAddress.GetColumnLetter(columnIndex);
+                        table.Columns.Add(columnName);
+                        ColumnsNames.Add(columnName);
+                    }
+
+                    for (var rowIndex = sheet.Dimension.Start.Row; rowIndex <= totalRows; rowIndex++)
+                    {
+                        var row = table.Rows.Add();
+                        for (var columnIndex = sheet.Dimension.Start.Column; columnIndex <= sheet.Dimension.End.Column; columnIndex++)
+                        {
+                            var columnName = ExcelCellAddress.GetColumnLetter(columnIndex);
+                            row[columnName] = sheet.Cells[columnName + rowIndex].Value;
+                        }
+                    }
+
+                    result.Tables.Add(table);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ColumnsNames.Clear();
+                _eventAggregator.PublishOnUIThread(ex);
+                return null;
+            }
         }
     }
 }

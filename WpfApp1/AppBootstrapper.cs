@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
+using ExcelCombinator.Models.Core;
 using ExcelCombinator.Models.Interfaces;
 using ExcelCombinator.ViewModels;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace ExcelCombinator
 {
@@ -25,6 +27,7 @@ namespace ExcelCombinator
 
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<IExcelViewer, ExcelViewerViewModel>();
+            _container.PerRequest<IRelation, ColumnRelations>();
 
         }
 

@@ -2,11 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:WpfApp1.Dictionaries"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                    xmlns:controls="clr-namespace:ExcelCombinator.Controls">
+                    xmlns:controls="clr-namespace:ExcelCombinator.Controls"
+                    xmlns:cal="http://www.caliburnproject.org"
+                    xmlns:interfaces="clr-namespace:ExcelCombinator.Models.Interfaces"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
     <!--Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
+    <!--Indicador de ocupado-->
     <Style TargetType="{x:Type controls:BusyIndicator}">
         <Setter Property="Template">
             <Setter.Value>
@@ -19,11 +22,51 @@
                         <Border Background="#806F6F6F" Visibility="{Binding IsBusy, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" >
                             <StackPanel VerticalAlignment="Center">
                                 <mah:ProgressRing x:Name="PRing" />
-                                <xctk:TrimmedTextBlock Text="{Binding BusyText, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" FontSize="20" />
+                                <TextBlock Text="{Binding BusyText, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" FontSize="20" />
                             </StackPanel>
                         </Border>
                     </Grid>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Menu de temas-->
+    <Ellipse x:Key="AccentMenuIcon" Width="16" Height="16" x:Shared="False" Fill="{Binding ColorBrush, Mode=OneWay}" />
+    <Style x:Key="AccentColorMenuItemStyle" BasedOn="{StaticResource MetroMenuItem}" TargetType="{x:Type MenuItem}">
+        <Setter Property="Header" Value="{Binding Name, Mode=OneWay}" />
+        <Setter Property="Icon" Value="{StaticResource AccentMenuIcon}" />
+        <Setter Property="cal:Message.Attach" Value="ChangeAccent" />
+    </Style>
+
+    <Style x:Key="RelationListbox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate DataType="{x:Type interfaces:IRelation}">
+                    <Grid Margin="0, 0, 0, 2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Origen: " Foreground="{DynamicResource AccentColorBrush}" />
+                        <TextBlock Grid.Column="1" Text="{Binding Origin}" FontWeight="Bold" Margin="5, 0" />
+                        <TextBlock Grid.Column="2" Text="Destino: " Foreground="{DynamicResource AccentColorBrush}"/>
+                        <TextBlock Grid.Column="3" Text="{Binding Destiny}" FontWeight="Bold" Margin="5, 0" />
+                        <Button Grid.Column="4" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}" BorderThickness="0" Margin="10, 0" Focusable="False">
+                            <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="10" Foreground="{DynamicResource AccentColorBrush}" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Focusable" Value="False"/>
+                </Style>
             </Setter.Value>
         </Setter>
     </Style>
