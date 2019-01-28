@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ExcelCombinator.Models.Interfaces
+namespace ExcelCombinator.Interfaces
 {
     public interface IKey
     {

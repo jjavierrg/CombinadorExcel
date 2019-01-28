@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using OfficeOpenXml;
 
-namespace ExcelCombinator.Models.Interfaces
+namespace ExcelCombinator.Interfaces
 {
     public interface IOriginParser: IParser
     {

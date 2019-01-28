@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Caliburn.Micro;
-using ExcelCombinator.Models.Interfaces;
-using OfficeOpenXml;
+using ExcelCombinator.Interfaces;
 
-namespace ExcelCombinator.Models.Core
+namespace ExcelCombinator.Core
 {
     public class ParserMotor: IParseMotor
     {
@@ -21,17 +15,19 @@ namespace ExcelCombinator.Models.Core
             _destinyParser = destinyParser;
         }
 
-        public async Task<bool> Parse(string originPath, string destinyPath, IEnumerable<IRelation> columns, IEnumerable<IRelation> keys)
+        public async Task<bool> Parse(string originPath, string originSheet, string destinyPath, string destinySheet, IEnumerable<IRelation> columns, IEnumerable<IRelation> keys)
         {
             return await Task.Run<bool>(() =>
             {
                 _originParser.FilePath = originPath;
+                _originParser.SheetName = originSheet;
                 _originParser.Columns = columns;
                 _originParser.KeysColumns = keys;
 
                 if (!_originParser.Parse()) return false;
 
-                _destinyParser.FilePath = originPath;
+                _destinyParser.FilePath = destinyPath;
+                _destinyParser.SheetName = destinySheet;
                 _destinyParser.Columns = columns;
                 _destinyParser.KeysColumns = keys;
                 return _destinyParser.Process(_originParser.Values);

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Caliburn.Micro;
-using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.Interfaces;
 using OfficeOpenXml;
 
-namespace ExcelCombinator.Models.Core
+namespace ExcelCombinator.Core
 {
     public class DestinyParser: Parser, IDestinyParser
     {
@@ -33,9 +33,16 @@ namespace ExcelCombinator.Models.Core
                     var totalRows = excelWorksheet.Dimension.End.Row;
                     for (var rowNum = 2; rowNum <= totalRows; rowNum++)
                     {
-                        IKey key = new Key();
-                        foreach (var keyColumn in KeysColumns)
-                            key.AddKeyValue(excelWorksheet.Cells[keyColumn.Destiny + rowNum].GetValue<string>());
+                        var key = IoC.Get<IKey>();
+                        try
+                        {
+                            foreach (var keyColumn in KeysColumns)
+                                key.AddKeyValue(excelWorksheet.Cells[keyColumn.Destiny + rowNum].GetValue<string>());
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
 
                         if (!values.ContainsKey(key))
                             continue;
@@ -52,6 +59,8 @@ namespace ExcelCombinator.Models.Core
                             excelWorksheet.SetValue(column.Destiny + rowNum, originValue);
                         }
                     }
+
+                    xlPackage.Save();
                 }
 
                 return true;

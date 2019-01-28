@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Caliburn.Micro;
 using ExcelCombinator.CoreHelpers;
-using ExcelCombinator.Models.Interfaces;
-using OfficeOpenXml;
+using ExcelCombinator.Interfaces;
 
-namespace ExcelCombinator.Models.Core
+namespace ExcelCombinator.Core
 {
     public class Parser : IParser
     {

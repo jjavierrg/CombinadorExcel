@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
-using ExcelCombinator.Models.Core;
-using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.Core;
+using ExcelCombinator.Interfaces;
 using ExcelCombinator.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 
@@ -28,7 +28,10 @@ namespace ExcelCombinator
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<IExcelViewer, ExcelViewerViewModel>();
             _container.PerRequest<IRelation, ColumnRelations>();
-
+            _container.Singleton<IParseMotor, ParserMotor>();
+            _container.PerRequest<IOriginParser, OriginParser>();
+            _container.PerRequest<IDestinyParser, DestinyParser>();
+            _container.PerRequest<IKey, Key>();
         }
 
         protected override object GetInstance(Type service, string key)

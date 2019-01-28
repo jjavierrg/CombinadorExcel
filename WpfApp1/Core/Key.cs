@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.Interfaces;
 
-namespace ExcelCombinator.Models.Core
+namespace ExcelCombinator.Core
 {
     public class Key :IKey
     {
@@ -19,8 +19,10 @@ namespace ExcelCombinator.Models.Core
             if (!(obj is Key other)) return false;
             if (Keys == null && other.Keys == null) return true;
             if (Keys == null || other.Keys == null) return false;
+            if (Keys.Count != other.Keys.Count) return false;
+            if (Keys.Count == 0 && other.Keys.Count == 0) return true;
 
-            return Keys.All(x => other.Keys.Any(s => s.Equals(x, StringComparison.OrdinalIgnoreCase)));
+            return Keys.All(x => other.Keys.Any(s => (s ?? string.Empty).Equals((x ?? string.Empty), StringComparison.OrdinalIgnoreCase)));
         }
 
         protected bool Equals(Key other)
@@ -30,7 +32,7 @@ namespace ExcelCombinator.Models.Core
 
         public override int GetHashCode()
         {
-            return (Keys != null ? Keys.GetHashCode() : 0);
+            return (Keys != null ? string.Join("", Keys).GetHashCode() : 0);
         }
 
         public void AddKeyValue(string value)

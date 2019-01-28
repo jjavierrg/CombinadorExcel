@@ -1,7 +1,7 @@
 ﻿using System;
-using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.Interfaces;
 
-namespace ExcelCombinator.Models.Core
+namespace ExcelCombinator.Core
 {
     public class ColumnRelations: IRelation
     {

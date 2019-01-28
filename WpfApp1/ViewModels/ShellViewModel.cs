@@ -7,9 +7,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Caliburn.Micro;
+using ExcelCombinator.Core;
 using ExcelCombinator.CoreHelpers;
-using ExcelCombinator.Models.Core;
-using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.Interfaces;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using Brush = System.Drawing.Brush;
@@ -27,6 +27,7 @@ namespace ExcelCombinator.ViewModels
             ThemeManager.ChangeAppStyle(Application.Current, CurrentAccent, ThemeManager.GetAppTheme("BaseLight"));
         }
     }
+
     public class ShellViewModel : Screen, IShell, IHandle<BusyMessage>, IHandle<Exception>
     {
         private bool _isBusy;
@@ -139,7 +140,7 @@ namespace ExcelCombinator.ViewModels
 
         public async Task Parse()
         {
-            var result = await _motor.Parse(OriginExcelViewerVm.Path, DestinyExcelViewerVm.Path, ColumnsRelations, KeyRelations);
+            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations);
             if (result)
                 DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito");
         }

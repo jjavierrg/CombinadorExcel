@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using ExcelCombinator.CoreHelpers;
-using ExcelCombinator.Models.Interfaces;
+using ExcelCombinator.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using OfficeOpenXml;

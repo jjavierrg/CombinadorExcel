@@ -1,13 +1,12 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.IO;
-    using System.Linq;
-    using Caliburn.Micro;
-    using ExcelCombinator.Models.Interfaces;
+using System.IO;
+using System.Linq;
+using Caliburn.Micro;
+using ExcelCombinator.Interfaces;
 using OfficeOpenXml;
 
-namespace ExcelCombinator.Models.Core
+namespace ExcelCombinator.Core
 {
     public class OriginParser: Parser, IOriginParser
     {
@@ -38,15 +37,24 @@ namespace ExcelCombinator.Models.Core
                     var totalRows = excelWorksheet.Dimension.End.Row;
                     for (var rowNum = 2; rowNum <= totalRows; rowNum++)
                     {
-                        var key = new Key();
-                        foreach (var keyColumn in KeysColumns)
-                            key.Keys.Add(excelWorksheet.Cells[keyColumn.Origin + rowNum].GetValue<string>());
+                        var key = IoC.Get<IKey>();
 
-                        if (!_values.ContainsKey(key))
-                            _values.Add(key, new Dictionary<string, string>());
+                        try
+                        {
+                            foreach (var keyColumn in KeysColumns)
+                                key.AddKeyValue(excelWorksheet.Cells[keyColumn.Origin + rowNum].GetValue<string>());
 
-                        foreach (var column in Columns)
-                            _values[key].Add(column.Origin, excelWorksheet.Cells[column.Origin + rowNum].GetValue<string>());
+                            if (!_values.ContainsKey(key))
+                                _values.Add(key, new Dictionary<string, string>());
+
+                            foreach (var column in Columns)
+                                _values[key].Add(column.Origin, excelWorksheet.Cells[column.Origin + rowNum].GetValue<string>());
+                        }
+                        catch (Exception)
+                        {
+                            if (key != null && _values.ContainsKey(key))
+                                _values.Remove(key);
+                        }
                     }
                 }
 

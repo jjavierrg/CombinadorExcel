@@ -1,4 +1,4 @@
-﻿namespace ExcelCombinator.Models.Interfaces
+﻿namespace ExcelCombinator.Interfaces
 {
     public interface IRelation
     {

@@ -6,6 +6,7 @@
                  xmlns:cal="http://www.caliburnproject.org"
                  GlowBrush="{DynamicResource AccentColorBrush}"
                  xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  dialog:DialogParticipation.Register="{Binding}"
                       Title="{Binding WindowCaption}"
                       WindowStartupLocation="CenterScreen">
@@ -41,6 +42,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Campos a completar" Style="{DynamicResource TitleStyle}" />
                 <ListBox Grid.Row="2" ItemsSource="{Binding ColumnsRelations}" Style="{DynamicResource RelationListbox}" />
@@ -66,6 +68,12 @@
                     <Button x:Name="AddRelation" IsEnabled="{Binding CanAddRelation}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="Añadir Completar" HorizontalAlignment="Stretch" cal:Message.Attach="AddRelation" />
                     <Button x:Name="AddKey" IsEnabled="{Binding CanAddRelation}" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Content="Añadir Enlace" HorizontalAlignment="Stretch" cal:Message.Attach="AddKey" />
                 </Grid>
+                <Button Grid.Row="7" x:Name="StartProcess" HorizontalAlignment="Stretch" cal:Message.Attach="Parse">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Comenzar proceso" />
+                        <iconPacks:PackIconEntypo Kind="ControllerPlay" Margin="10, 0, 0, 0" />
+                    </StackPanel>
+                </Button>
             </Grid>
         </Grid>
     </controls:BusyIndicator>
