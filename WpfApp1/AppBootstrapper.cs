@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
 using ExcelCombinator.Core;
+using ExcelCombinator.CoreHelpers;
 using ExcelCombinator.Interfaces;
 using ExcelCombinator.ViewModels;
+using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace ExcelCombinator
@@ -28,6 +30,9 @@ namespace ExcelCombinator
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<IExcelViewer, ExcelViewerViewModel>();
             _container.PerRequest<IRelation, ColumnRelations>();
+            _container.PerRequest<IRelation, KeyColumn>(Constants.KEY_COLUMN_RELATION_KEY);
+            _container.PerRequest<IRelation, SubstitutionColumn>(Constants.SUBSTITUTION_COLUMN_RELATION_KEY);
+
             _container.Singleton<IParseMotor, ParserMotor>();
             _container.PerRequest<IOriginParser, OriginParser>();
             _container.PerRequest<IDestinyParser, DestinyParser>();
@@ -51,6 +56,12 @@ namespace ExcelCombinator
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
+            var accent = Properties.Settings.Default.Theme;
+
+            if (string.IsNullOrEmpty(accent))
+                accent = "Cobalt";
+
+            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(accent), ThemeManager.GetAppTheme("BaseLight"));
             DisplayRootViewFor<IShell>();
         }
     }

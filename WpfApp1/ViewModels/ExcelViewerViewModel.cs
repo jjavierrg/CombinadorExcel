@@ -65,6 +65,7 @@ namespace ExcelCombinator.ViewModels
             {
                 _fileLocation = value;
                 NotifyOfPropertyChange();
+                _eventAggregator.PublishOnUIThread(Constants.FILE_LOAD);
             }
         }
 

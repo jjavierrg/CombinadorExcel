@@ -28,4 +28,7 @@ namespace ExcelCombinator.Core
             }
         }
     }
+
+    public class KeyColumn : ColumnRelations { }
+    public class SubstitutionColumn : ColumnRelations { }
 }

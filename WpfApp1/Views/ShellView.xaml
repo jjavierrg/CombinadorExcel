@@ -68,7 +68,7 @@
                     <Button x:Name="AddRelation" IsEnabled="{Binding CanAddRelation}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="Añadir Completar" HorizontalAlignment="Stretch" cal:Message.Attach="AddRelation" />
                     <Button x:Name="AddKey" IsEnabled="{Binding CanAddRelation}" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Content="Añadir Enlace" HorizontalAlignment="Stretch" cal:Message.Attach="AddKey" />
                 </Grid>
-                <Button Grid.Row="7" x:Name="StartProcess" HorizontalAlignment="Stretch" cal:Message.Attach="Parse">
+                <Button Grid.Row="7" HorizontalAlignment="Stretch" cal:Message.Attach="Parse">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Comenzar proceso" />
                         <iconPacks:PackIconEntypo Kind="ControllerPlay" Margin="10, 0, 0, 0" />

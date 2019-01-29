@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Column="0" Grid.Row="0" Text="Fichero Excel" Style="{DynamicResource LabelStyle}" />
-        <TextBox Grid.Column="1" Grid.Row="0" mah:TextBoxHelper.Watermark="Fichero Excel" Text="{Binding FileLocation}" Margin="5" />
+        <TextBox Grid.Column="1" Grid.Row="0" mah:TextBoxHelper.Watermark="Fichero Excel" Text="{Binding FileLocation}" IsReadOnly="True" Margin="5" />
         <Button x:Name="OpenFile" Grid.Column="2" Grid.Row="0" Content="Buscar" />
         <TextBlock Grid.Column="0" Grid.Row="1" Text="Hoja" HorizontalAlignment="Right" Style="{StaticResource LabelStyle}" />
         <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Sheets}" Grid.ColumnSpan="2" IsEnabled="{Binding IsParsed}" SelectedValue="{Binding SelectedSheet}"/>

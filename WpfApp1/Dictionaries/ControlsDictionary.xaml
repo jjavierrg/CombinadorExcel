@@ -55,7 +55,7 @@
                         <TextBlock Grid.Column="1" Text="{Binding Origin}" FontWeight="Bold" Margin="5, 0" />
                         <TextBlock Grid.Column="2" Text="Destino: " Foreground="{DynamicResource AccentColorBrush}"/>
                         <TextBlock Grid.Column="3" Text="{Binding Destiny}" FontWeight="Bold" Margin="5, 0" />
-                        <Button Grid.Column="4" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}" BorderThickness="0" Margin="10, 0" Focusable="False" cal:Message.Attach="Eliminar">
+                        <Button Grid.Column="4" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}" BorderThickness="0" Margin="10, 0" Focusable="False" cal:Message.Attach="DeleteRelation($dataContext)">
                             <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="10" Foreground="{DynamicResource AccentColorBrush}" />
                         </Button>
                     </Grid>

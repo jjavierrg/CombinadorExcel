@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -25,10 +26,12 @@ namespace ExcelCombinator.ViewModels
         public void ChangeAccent()
         {
             ThemeManager.ChangeAppStyle(Application.Current, CurrentAccent, ThemeManager.GetAppTheme("BaseLight"));
+            Properties.Settings.Default.Theme = CurrentAccent?.Name ?? "";
+            Properties.Settings.Default.Save();
         }
     }
 
-    public class ShellViewModel : Screen, IShell, IHandle<BusyMessage>, IHandle<Exception>
+    public class ShellViewModel : Screen, IShell, IHandle<BusyMessage>, IHandle<Exception>, IHandle<string>
     {
         private bool _isBusy;
         private string _busyText;
@@ -96,6 +99,17 @@ namespace ExcelCombinator.ViewModels
         }
 
         public bool CanAddRelation=> !string.IsNullOrEmpty(OriginColumn) && !string.IsNullOrEmpty(DestinyColumn);
+        public bool CanParse
+        {
+            get
+            {
+                if (KeyRelations == null || !KeyRelations.Any()) return false;
+                if (ColumnsRelations == null || !ColumnsRelations.Any()) return false;
+                if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path) || string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
+                if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path) || string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
+                return true;
+            }
+        }
 
         public IExcelViewer OriginExcelViewerVm { get; }
         public IExcelViewer DestinyExcelViewerVm { get; }
@@ -113,29 +127,39 @@ namespace ExcelCombinator.ViewModels
             DialogCoordinator.Instance.ShowModalMessageExternal(this, "Error", ex.Message);
         }
 
+        public void Handle(string value)
+        {
+            if (value == Constants.FILE_LOAD)
+                NotifyOfPropertyChange(() => CanParse);
+        }
+
         public void AddRelation()
         {
             if (string.IsNullOrEmpty(OriginColumn)) return;
             if (string.IsNullOrEmpty(DestinyColumn)) return;
 
-            var relation = IoC.Get<IRelation>();
+            var relation = IoC.Get<IRelation>(Constants.SUBSTITUTION_COLUMN_RELATION_KEY);
             relation.Origin = OriginColumn;
             relation.Destiny = DestinyColumn;
 
             if (!ColumnsRelations.Contains(relation))
                 ColumnsRelations.Add(relation);
+
+            NotifyOfPropertyChange(() => CanParse);
         }
         public void AddKey()
         {
             if (string.IsNullOrEmpty(OriginColumn)) return;
             if (string.IsNullOrEmpty(DestinyColumn)) return;
 
-            var relation = IoC.Get<IRelation>();
+            var relation = IoC.Get<IRelation>(Constants.KEY_COLUMN_RELATION_KEY);
             relation.Origin = OriginColumn;
             relation.Destiny = DestinyColumn;
 
             if (!KeyRelations.Contains(relation))
                 KeyRelations.Add(relation);
+
+            NotifyOfPropertyChange(() => CanParse);
         }
 
         public async Task Parse()
@@ -143,6 +167,31 @@ namespace ExcelCombinator.ViewModels
             var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations);
             if (result)
                 DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito");
+        }
+
+        public void DeleteRelation(IRelation item)
+        {
+            if (item == null) return;
+
+            if (item is KeyColumn && KeyRelations.Contains(item))
+                KeyRelations.Remove(item);
+            else if (item is SubstitutionColumn && ColumnsRelations.Contains(item))
+                ColumnsRelations.Remove(item);
+
+            NotifyOfPropertyChange(() => CanParse);
+        }
+
+        public void clearAllKeys()
+        {
+            KeyRelations.Clear();
+            NotifyOfPropertyChange(() => CanParse);
+        }
+
+        public void ClearAllSubstitutions()
+        {
+            ColumnsRelations.Clear();
+            NotifyOfPropertyChange(() => CanParse);
+     
         }
     }
 }
