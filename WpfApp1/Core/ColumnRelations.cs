@@ -10,7 +10,9 @@ namespace ExcelCombinator.Core
 
         public override bool Equals(object obj)
         {
-            if (!(obj is ColumnRelations other)) return false;
+            var other = obj as ColumnRelations;
+            if (other == null) return false;
+
             if (!Origin.Equals(other.Origin, StringComparison.OrdinalIgnoreCase)) return false;
             if (!Destiny.Equals(other.Destiny, StringComparison.OrdinalIgnoreCase)) return false;
 

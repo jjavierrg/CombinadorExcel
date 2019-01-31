@@ -61,7 +61,7 @@ namespace ExcelCombinator.ViewModels
         public string WindowCaption => "Combinador de excels";
         public bool IsBusy
         {
-            get => _isBusy;
+            get { return _isBusy; }
             set
             {
                 _isBusy = value;
@@ -70,7 +70,7 @@ namespace ExcelCombinator.ViewModels
         }
         public string BusyText
         {
-            get => _busyText;
+            get { return _busyText; }
             set
             {
                 _busyText = value;
@@ -79,7 +79,7 @@ namespace ExcelCombinator.ViewModels
         }
         public string OriginColumn
         {
-            get => _originColumn;
+            get { return _originColumn; }
             set
             {
                 _originColumn = value;
@@ -89,7 +89,7 @@ namespace ExcelCombinator.ViewModels
         }
         public string DestinyColumn
         {
-            get => _destinyColumn;
+            get { return _destinyColumn; }
             set
             {
                 _destinyColumn = value;
@@ -191,7 +191,6 @@ namespace ExcelCombinator.ViewModels
         {
             ColumnsRelations.Clear();
             NotifyOfPropertyChange(() => CanParse);
-     
         }
     }
 }

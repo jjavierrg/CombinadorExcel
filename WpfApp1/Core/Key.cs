@@ -16,7 +16,9 @@ namespace ExcelCombinator.Core
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Key other)) return false;
+            var other = obj as Key;
+            if (other == null) return false;
+
             if (Keys == null && other.Keys == null) return true;
             if (Keys == null || other.Keys == null) return false;
             if (Keys.Count != other.Keys.Count) return false;

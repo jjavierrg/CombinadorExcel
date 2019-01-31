@@ -37,7 +37,7 @@ namespace ExcelCombinator.ViewModels
 
         public ObservableCollection<string> Sheets
         {
-            get => _sheets;
+            get { return _sheets; }
             private set
             {
                 _sheets = value;
@@ -47,7 +47,7 @@ namespace ExcelCombinator.ViewModels
 
         public string SelectedSheet
         {
-            get => _selectedSheet;
+            get { return _selectedSheet; }
             set
             {
                 _selectedSheet = value;
@@ -60,7 +60,7 @@ namespace ExcelCombinator.ViewModels
 
         public string FileLocation
         {
-            get => _fileLocation;
+            get { return _fileLocation; }
             set
             {
                 _fileLocation = value;
@@ -71,7 +71,7 @@ namespace ExcelCombinator.ViewModels
 
         public bool IsParsed
         {
-            get => _isParsed;
+            get { return _isParsed; }
             set
             {
                 _isParsed = value;

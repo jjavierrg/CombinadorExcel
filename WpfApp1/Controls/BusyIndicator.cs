@@ -10,13 +10,13 @@ namespace ExcelCombinator.Controls
 
         public string BusyText
         {
-            get => (string) GetValue(BusyTextProperty);
+            get { return (string) GetValue(BusyTextProperty); }
             set => SetValue(BusyTextProperty, value);
         }
 
         public bool IsBusy
         {
-            get => (bool) GetValue(IsBusyProperty);
+            get { return (bool) GetValue(IsBusyProperty); }
             set => SetValue(IsBusyProperty, value);
         }
     }
