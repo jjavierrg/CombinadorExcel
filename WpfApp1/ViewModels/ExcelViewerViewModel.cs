@@ -28,12 +28,25 @@ namespace ExcelCombinator.ViewModels
         public ExcelViewerViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            ColumnsNames = new BindableCollection<string>();
         }
 
         public string Path => FileLocation;
 
-        public IObservableCollection<string> ColumnsNames { get; }
+        public IObservableCollection<string> ColumnsNames
+        {
+            get
+            {
+                var result = new BindableCollection<string>();
+                if (_excelData?.Tables[SelectedSheet]?.Columns == null) return result;
+
+                foreach (DataColumn column in _excelData?.Tables[SelectedSheet]?.Columns)
+                {
+                    result.Add(column.ColumnName);
+                }
+
+                return result;
+            }
+        }
 
         public ObservableCollection<string> Sheets
         {
@@ -53,6 +66,7 @@ namespace ExcelCombinator.ViewModels
                 _selectedSheet = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => PreviewData);
+                NotifyOfPropertyChange(() => ColumnsNames);
             }
         }
 
@@ -115,11 +129,15 @@ namespace ExcelCombinator.ViewModels
 
                 foreach (var sheet in package.Workbook.Worksheets)
                 {
+                    if ((sheet?.Dimension?.End?.Row ?? 0) <= 0) continue;
+                    if ((sheet?.Dimension?.End?.Column ?? 0) <= 0) continue;
+
                     var table = new DataTable { TableName = sheet.Name };
                     var totalRows = Math.Min(sheet.Dimension.End.Row, MAX_PREVIEW_ROWS);
+                    var totalColumns = Math.Min(sheet.Dimension.End.Column, Constants.MAX_COLUMNS);
                     ColumnsNames.Clear();
 
-                    for (var columnIndex=sheet.Dimension.Start.Column; columnIndex <= sheet.Dimension.End.Column; columnIndex++)
+                    for (var columnIndex=sheet.Dimension.Start.Column; columnIndex <= totalColumns; columnIndex++)
                     {
                         var columnName = ExcelCellAddress.GetColumnLetter(columnIndex);
                         table.Columns.Add(columnName);
@@ -129,7 +147,7 @@ namespace ExcelCombinator.ViewModels
                     for (var rowIndex = sheet.Dimension.Start.Row; rowIndex <= totalRows; rowIndex++)
                     {
                         var row = table.Rows.Add();
-                        for (var columnIndex = sheet.Dimension.Start.Column; columnIndex <= sheet.Dimension.End.Column; columnIndex++)
+                        for (var columnIndex = sheet.Dimension.Start.Column; columnIndex <= totalColumns; columnIndex++)
                         {
                             var columnName = ExcelCellAddress.GetColumnLetter(columnIndex);
                             row[columnName] = sheet.Cells[columnName + rowIndex].Value;

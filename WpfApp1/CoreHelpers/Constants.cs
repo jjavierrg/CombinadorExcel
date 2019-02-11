@@ -11,5 +11,7 @@ namespace ExcelCombinator.CoreHelpers
         public const string KEY_COLUMN_RELATION_KEY = "KEY_COLUMN";
         public const string SUBSTITUTION_COLUMN_RELATION_KEY = "SUBSTITUTION_COLUMN";
         public const string FILE_LOAD = "SUBSTITUTION_COLUMN";
+
+        public const int MAX_COLUMNS = 100;
     }
 }
