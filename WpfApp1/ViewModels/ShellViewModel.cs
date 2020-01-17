@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Security.Permissions;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using ExcelCombinator.CoreHelpers;
 using ExcelCombinator.Interfaces;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using Brush = System.Drawing.Brush;
 
 namespace ExcelCombinator.ViewModels
@@ -160,6 +162,33 @@ namespace ExcelCombinator.ViewModels
                 KeyRelations.Add(relation);
 
             NotifyOfPropertyChange(() => CanParse);
+        }
+
+        public void FixCsv()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            openFileDialog.Filter = "Csv Files (*.csv) | *.csv";
+            if (openFileDialog.ShowDialog() != true)
+                return;
+
+            var utf8WithBOM = new System.Text.UTF8Encoding(true);
+
+            try
+            {
+                foreach (var file in openFileDialog.FileNames)
+                {
+                    var content = File.ReadAllLines(file);
+                    File.SetAttributes(file, FileAttributes.Normal);
+                    File.WriteAllLines(file, content, utf8WithBOM);
+                }
+
+                MessageBox.Show("Ficheros procesados correctamente");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al procesar los ficheros: " + ex.Message);
+            }
         }
 
         public async Task Parse()
