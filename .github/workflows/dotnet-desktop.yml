@@ -18,8 +18,9 @@ jobs:
       - name: Checkout Git Project
         uses: actions/checkout@v2
         
-      - name: List
-        run: dir
+      - name: Restore nuget packages
+        shell: cmd
+        run: '"%MSBUILD_PATH%\MSBuild.exe" ${{ env.SOLUTION_FILE }} -t:restore'
 
       - name: Compile Solution
         shell: cmd
