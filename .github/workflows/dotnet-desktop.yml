@@ -7,11 +7,13 @@ on:
 env:
   SOLUTION_FILE: ExcelCombinator.sln
   RELEASE_FOLDER: WpfApp1\bin\Release
-  MSBUILD: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe
   
 jobs:
   compile:
     runs-on: windows-2019
+    env:
+      MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
+      
     steps:
       - name: Checkout Git Project
         uses: actions/checkout@v2
@@ -20,7 +22,8 @@ jobs:
         run: dir
 
       - name: Compile Solution
-        run: '"${{ env.MSBUILD }}" ${{ env.SOLUTION_FILE }} /p:Configuration=Release'
+        shell: cmd
+        run: '"%MSBUILD_PATH%\MSBuild.exe" ${{ env.SOLUTION_FILE }} /p:Configuration=Release'
 
       - name: Remove pdb and xml files
         run: |
