@@ -2,8 +2,7 @@ name: "Deploy app"
 
 on:
   push:
-    tags:
-      - "class-commands/v*"
+    branches: [ "master" ]
 
 env:
   PROJECT_PATH: WpfApp1/ExcelCombinator.csproj
