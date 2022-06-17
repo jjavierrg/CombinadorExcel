@@ -15,13 +15,18 @@ jobs:
       MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
       
     steps:
+      - name: Get current date # get the date of the build
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        
       - name: Checkout Git Project
         uses: actions/checkout@v2
         
-      - name: Restore nuget packages
+      - name: Use Nuget
         uses: nuget/setup-nuget@v1
 
-      - run: nuget restore ${{ env.SOLUTION_FILE }}
+      - name: Restore nuget packages
+        run: nuget restore ${{ env.SOLUTION_FILE }}
 
       - name: Compile Solution
         shell: cmd
@@ -32,8 +37,13 @@ jobs:
           rm .\${{ env.RELEASE_FOLDER }}\*.pdb
           rm .\${{ env.RELEASE_FOLDER }}\*.xml
           
-      - name: Publish artifact
-        uses: actions/upload-artifact@v2
-        with: 
-          name: assets-for-download
-          path: "${{ env.RELEASE_FOLDER }}"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          release_name: Release ${{ steps.date.outputs.date }}
+          draft: false
+          prerelease: false
