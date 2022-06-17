@@ -36,13 +36,16 @@ jobs:
         run: |
           rm .\${{ env.RELEASE_FOLDER }}\*.pdb
           rm .\${{ env.RELEASE_FOLDER }}\*.xml
+        
+      - name: Publish artifact
+        uses: actions/upload-artifact@v3
+        with: 
+          name: ExcelCombinator_${{ steps.date.outputs.date }}
+          path: ${{ env.RELEASE_FOLDER }}
           
       - name: zip win artifact
         shell: pwsh
-        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }} -DestinationPath ExcelCombinator_${{ steps.date.outputs.date }}.zip
-        
-      - name: list
-        run: dir
+        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.date.outputs.date }}.zip
           
       - name: Create Release
         id: create_release
@@ -65,9 +68,3 @@ jobs:
           asset_path: ./ExcelCombinator_${{ steps.date.outputs.date }}.zip
           asset_name: ExcelCombinator_${{ steps.date.outputs.date }}.zip
           asset_content_type: application/zip
-
-      - name: Publish artifact
-        uses: actions/upload-artifact@v2
-        with: 
-          name: ExcelCombinator_${{ steps.date.outputs.date }}
-          path: ExcelCombinator_${{ steps.date.outputs.date }}.zip
