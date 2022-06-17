@@ -37,6 +37,13 @@ jobs:
           rm .\${{ env.RELEASE_FOLDER }}\*.pdb
           rm .\${{ env.RELEASE_FOLDER }}\*.xml
           
+      - name: zip win artifact
+        shell: pwsh
+        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }} -DestinationPath ExcelCombinator_${{ steps.date.outputs.date }}.zip
+        
+      - name: list
+        run: dir
+          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
