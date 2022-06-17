@@ -17,15 +17,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Compile Solution
-        run: '"%MSBUILD%" {{ env.SOLUTION_FILE }} /p:Configuration=Release'
+        run: '"${{ env.MSBUILD }}" ${{ env.SOLUTION_FILE }} /p:Configuration=Release'
 
       - name: Remove pdb and xml files
         run: |
-          rm .\{{ env.RELEASE_FOLDER }}\*.pdb
-          rm .\{{ env.RELEASE_FOLDER }}\*.xml
+          rm .\${{ env.RELEASE_FOLDER }}\*.pdb
+          rm .\${{ env.RELEASE_FOLDER }}\*.xml
           
       - name: Publish artifact
         uses: actions/upload-artifact@v2
         with: 
           name: assets-for-download
-          path: "{{ env.RELEASE_FOLDER }}"
+          path: "${{ env.RELEASE_FOLDER }}"
