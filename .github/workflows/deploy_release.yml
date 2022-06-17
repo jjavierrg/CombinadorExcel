@@ -42,8 +42,9 @@ jobs:
         with: 
           name: ExcelCombinator_${{ steps.date.outputs.date }}
           path: ${{ env.RELEASE_FOLDER }}
+          retention-days: 5
           
-      - name: zip win artifact
+      - name: zip release artifact
         shell: pwsh
         run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.date.outputs.date }}.zip
           
