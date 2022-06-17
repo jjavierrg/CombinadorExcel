@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout Git Project
         uses: actions/checkout@v2
+        
+      - name: List
+        run: dir
 
       - name: Compile Solution
         run: '"${{ env.MSBUILD }}" ${{ env.SOLUTION_FILE }} /p:Configuration=Release'
