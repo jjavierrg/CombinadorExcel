@@ -22,7 +22,7 @@ namespace ExcelCombinator.ViewModels
     public class AccentColorMenuData
     {
         public string Name => CurrentAccent?.Name;
-        public SolidColorBrush ColorBrush => (SolidColorBrush) CurrentAccent?.Resources["AccentColorBrush"];
+        public SolidColorBrush ColorBrush => (SolidColorBrush)CurrentAccent?.Resources["AccentColorBrush"];
         public Accent CurrentAccent { get; set; }
 
         public void ChangeAccent()
@@ -54,7 +54,7 @@ namespace ExcelCombinator.ViewModels
             ColumnsRelations = new BindableCollection<IRelation>();
 
             this.AccentColors = ThemeManager.Accents
-                .Select(a => new AccentColorMenuData {CurrentAccent = a})
+                .Select(a => new AccentColorMenuData { CurrentAccent = a })
                 .ToList();
         }
 
@@ -100,7 +100,7 @@ namespace ExcelCombinator.ViewModels
             }
         }
 
-        public bool CanAddRelation=> !string.IsNullOrEmpty(OriginColumn) && !string.IsNullOrEmpty(DestinyColumn);
+        public bool CanAddRelation => !string.IsNullOrEmpty(OriginColumn) && !string.IsNullOrEmpty(DestinyColumn);
         public bool CanParse
         {
             get
@@ -194,8 +194,20 @@ namespace ExcelCombinator.ViewModels
         public async Task Parse()
         {
             var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations);
-            if (result)
-                DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito");
+            if (!result)
+                return;
+
+            var options = new MetroDialogSettings();
+            options.NegativeButtonText = "Aceptar";
+            options.AffirmativeButtonText= "Abrir excel destino";
+            options.DefaultButtonFocus = MessageDialogResult.Affirmative;
+
+            var openFile = DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito.", MessageDialogStyle.AffirmativeAndNegative, options);
+            if (openFile == MessageDialogResult.Affirmative)
+            {
+                var destinationFile = DestinyExcelViewerVm.Path;
+                System.Diagnostics.Process.Start(destinationFile);
+            }
         }
 
         public void DeleteRelation(IRelation item)
