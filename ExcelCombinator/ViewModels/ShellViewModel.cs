@@ -107,8 +107,9 @@ namespace ExcelCombinator.ViewModels
             {
                 if (KeyRelations == null || !KeyRelations.Any()) return false;
                 if (ColumnsRelations == null || !ColumnsRelations.Any()) return false;
-                if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path) || string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
-                if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path) || string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
+                if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
+                if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
+
                 return true;
             }
         }
@@ -197,17 +198,16 @@ namespace ExcelCombinator.ViewModels
             if (!result)
                 return;
 
-            var options = new MetroDialogSettings();
-            options.NegativeButtonText = "Aceptar";
-            options.AffirmativeButtonText= "Abrir excel destino";
-            options.DefaultButtonFocus = MessageDialogResult.Affirmative;
+            var options = new MetroDialogSettings
+            {
+                NegativeButtonText = "Aceptar",
+                AffirmativeButtonText = "Abrir excel destino",
+                DefaultButtonFocus = MessageDialogResult.Affirmative
+            };
 
             var openFile = DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito.", MessageDialogStyle.AffirmativeAndNegative, options);
             if (openFile == MessageDialogResult.Affirmative)
-            {
-                var destinationFile = DestinyExcelViewerVm.Path;
-                System.Diagnostics.Process.Start(destinationFile);
-            }
+                DestinyExcelViewerVm.OpenFile();
         }
 
         public void DeleteRelation(IRelation item)

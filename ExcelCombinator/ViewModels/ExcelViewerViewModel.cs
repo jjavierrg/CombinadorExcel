@@ -79,6 +79,7 @@ namespace ExcelCombinator.ViewModels
             {
                 _fileLocation = value;
                 NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => CanOpenFile);
                 _eventAggregator.PublishOnUIThread(Constants.FILE_LOAD);
             }
         }
@@ -93,9 +94,18 @@ namespace ExcelCombinator.ViewModels
             }
         }
 
-        public bool CanOpenFile => true;
+        public bool CanOpenFile => !string.IsNullOrWhiteSpace(_fileLocation) && File.Exists(_fileLocation);
+        public bool CanSearchFile => true;
 
-        public async Task OpenFile()
+        public void OpenFile()
+        {
+            if (!CanOpenFile)
+                return;
+
+            System.Diagnostics.Process.Start(_fileLocation);
+        }
+
+        public async Task SearchFile()
         {
             var ofd = new OpenFileDialog { Filter = "Ficheros excel (*.xlsx)|*.xlsx" };
             var result = ofd.ShowDialog();

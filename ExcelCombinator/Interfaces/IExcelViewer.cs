@@ -7,5 +7,6 @@ namespace ExcelCombinator.Interfaces
         string Path { get; }
         string SelectedSheet { get; }
         IObservableCollection<string> ColumnsNames { get; }
+        void OpenFile();
     }
 }
