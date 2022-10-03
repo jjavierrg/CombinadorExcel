@@ -12,7 +12,7 @@ namespace ExcelCombinator.Core
     {
         public DestinyParser(IEventAggregator eventAggregator) : base(eventAggregator) { }
 
-        public bool Process(IDictionary<IKey, IDictionary<string, string>> values)
+        public bool Process(IDictionary<IKey, IDictionary<string, object>> values)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace ExcelCombinator.Core
                                 continue;
 
                             var originValue = columnsData[column.Origin];
-                            if (string.IsNullOrEmpty(originValue)) continue;
+                            if (originValue == null) continue;
 
                             excelWorksheet.SetValue(column.Destiny + rowNum, originValue);
                         }

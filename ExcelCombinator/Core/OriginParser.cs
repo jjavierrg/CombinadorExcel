@@ -10,14 +10,14 @@ namespace ExcelCombinator.Core
 {
     public class OriginParser: Parser, IOriginParser
     {
-        private Dictionary<IKey, IDictionary<string, string>> _values = new Dictionary<IKey, IDictionary<string, string>>();
-        public IDictionary<IKey, IDictionary<string, string>> Values => _values;
+        private Dictionary<IKey, IDictionary<string, object>> _values = new Dictionary<IKey, IDictionary<string, object>>();
+        public IDictionary<IKey, IDictionary<string, object>> Values => _values;
 
         public OriginParser(IEventAggregator eventAggregator) : base(eventAggregator) { }
 
         public bool Parse()
         {
-            _values = new Dictionary<IKey, IDictionary<string, string>>();
+            _values = new Dictionary<IKey, IDictionary<string, object>>();
 
             try
             {
@@ -45,10 +45,13 @@ namespace ExcelCombinator.Core
                                 key.AddKeyValue(excelWorksheet.Cells[keyColumn.Origin + rowNum].GetValue<string>());
 
                             if (!_values.ContainsKey(key))
-                                _values.Add(key, new Dictionary<string, string>());
+                                _values.Add(key, new Dictionary<string, object>());
 
                             foreach (var column in Columns)
-                                _values[key].Add(column.Origin, excelWorksheet.Cells[column.Origin + rowNum].GetValue<string>());
+                            {
+                                var value  = excelWorksheet.Cells[column.Origin + rowNum].Value;
+                                _values[key].Add(column.Origin, value);
+                            }
                         }
                         catch (Exception)
                         {
