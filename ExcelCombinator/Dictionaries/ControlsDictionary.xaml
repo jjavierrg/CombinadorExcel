@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:WpfApp1.Dictionaries"
+                    xmlns:local="clr-namespace:ExcelCombinator.Dictionaries"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:controls="clr-namespace:ExcelCombinator.Controls"
                     xmlns:cal="http://www.caliburnproject.org"

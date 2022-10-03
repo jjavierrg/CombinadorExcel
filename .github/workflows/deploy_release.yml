@@ -6,7 +6,7 @@ on:
 
 env:
   SOLUTION_FILE: ExcelCombinator.sln
-  RELEASE_FOLDER: WpfApp1\bin\Release
+  RELEASE_FOLDER: ExcelCombinator\bin\Release
   
 jobs:
   compile_and_publish:
