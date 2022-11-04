@@ -64,7 +64,7 @@ namespace ExcelCombinator.ViewModels
             WindowCaption = getWindowTitle();
 
             AutoUpdater.ClearAppDirectory = true;
-            AutoUpdater.Start("https://raw.githubusercontent.com/Jjavierrg/CombinadorExcel/master/udpate.xml");
+            AutoUpdater.Start("https://raw.githubusercontent.com/Jjavierrg/CombinadorExcel/master/update.xml");
         }
 
         public IList<AccentColorMenuData> AccentColors { get; }

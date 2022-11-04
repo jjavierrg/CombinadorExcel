@@ -57,6 +57,12 @@ jobs:
           Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ${{ steps.release_name.outputs.release_name }}.zip
           "zip_file=${{ steps.release_name.outputs.release_name }}.zip" >> $env:GITHUB_OUTPUT
 
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Generate Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -66,15 +72,15 @@ jobs:
           draft: false
           prerelease: false
           name: 'Release ${{ steps.version.outputs.dateversion }}'
-          generate_release_notes: true
+          body: ${{steps.github_release.outputs.changelog}}
 
       - name: Url to release
         id: release_url
         uses: mad9000/actions-find-and-replace-string@2
         with:
-            source: ${{ steps.create_release.outputs.url }}
-            find: '/tag/'
-            replace: '/download/'
+          source: ${{ steps.create_release.outputs.url }}
+          find: '/tag/'
+          replace: '/download/'
 
       - name: Updating updater xml Version
         id: update-xml-version
