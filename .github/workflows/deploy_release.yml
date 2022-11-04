@@ -1,35 +1,40 @@
-name: "Deploy app release"
+name: 'Deploy app release'
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ['master']
 
 env:
   SOLUTION_FILE: ExcelCombinator.sln
   RELEASE_FOLDER: ExcelCombinator\bin\Release
-  
+
 jobs:
   compile_and_publish:
     runs-on: windows-2019
     env:
       MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
-      
+
     steps:
       - name: Generate version number
         id: version
         run: |
           "dateversion=$(date +'%y-%m-%d-%H%M')" >> $env:GITHUB_OUTPUT
           "version=$(date +'%y.%m.%d.%H%M')" >> $env:GITHUB_OUTPUT
-        
+
+      - name: Generating name for release
+        id: release_name
+        run: |
+          "release_name=ExcelCombinator_${{ steps.version.outputs.dateversion }}" >> $env:GITHUB_OUTPUT
+
       - name: Checkout Git Project
         uses: actions/checkout@v3
-        
+
       - name: Use Nuget
         uses: nuget/setup-nuget@v1
 
       - name: Restore nuget packages
         run: nuget restore ${{ env.SOLUTION_FILE }}
-        
+
       - name: Change version number in Assembly
         uses: dannevesdantas/set-version-assemblyinfo@v.1.0.0
         with:
@@ -44,39 +49,41 @@ jobs:
         run: |
           rm .\${{ env.RELEASE_FOLDER }}\*.pdb
           rm .\${{ env.RELEASE_FOLDER }}\*.xml
-          
+
       - name: zip release artifact
+        id: zip_release
         shell: pwsh
-        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.outputs.dateversion }}.zip        
+        run: |
+          Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ${{ steps.release_name.outputs.release_name }}.zip
+          "zip_file=${{ steps.release_name.outputs.release_name }}.zip" >> $env:GITHUB_OUTPUT
 
       - name: Generate Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: ExcelCombinator_${{ steps.version.outputs.dateversion }}.zip
+          files: ${{ steps.zip_release.outputs.zip_file }}
           tag_name: ${{ steps.version.outputs.dateversion }}
           draft: false
           prerelease: false
-          name: "Release ${{ steps.version.outputs.dateversion }}"
+          name: 'Release ${{ steps.version.outputs.dateversion }}'
           generate_release_notes: true
-
 
       - name: Updating updater xml Version
         id: update-xml-version
         uses: rvolo/xml-replace-action@v0.2
         with:
-          filepath: "update.xml"
-          xpath: "//item/version"
+          filepath: 'update.xml'
+          xpath: '//item/version'
           replace: ${{ steps.version.outputs.version }}
-          
+
       - name: Updating updater xml Url
         id: updater-xml-url
         uses: rvolo/xml-replace-action@v0.2
         with:
-          filepath: "update.xml"
-          xpath: "//item/url"
-          replace: ${{ steps.create_release.outputs.url }}
-      
+          filepath: 'update.xml'
+          xpath: '//item/url'
+          replace: '${{ steps.create_release.outputs.url }}/${{ steps.zip_release.outputs.zip_file }}'
+
       - name: Commit and push changes
         run: |
           git config user.name github-actions
@@ -84,6 +91,3 @@ jobs:
           git add .
           git commit -m "[skip ci] Bump version to ${{ steps.version.outputs.version }}"
           git push
-
-        
-
