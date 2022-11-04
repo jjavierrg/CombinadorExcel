@@ -28,7 +28,7 @@ jobs:
         id: update-xml-test
         uses: rvolo/xml-replace-action@v0.2
         with:
-          filepath: "updater.xml"
+          filepath: "update.xml"
           xpath: "//item/version"
           replace: ${{ steps.version.outputs.version }}
         
