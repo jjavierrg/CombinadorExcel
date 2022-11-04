@@ -47,7 +47,18 @@ jobs:
           
       - name: zip release artifact
         shell: pwsh
-        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.dateversion }}.zip
+        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.dateversion }}.zip        
+
+      - name: Generate Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ExcelCombinator_${{ steps.version.dateversion }}.zip
+          tag_name: ${{ steps.version.dateversion }}
+          draft: false
+          prerelease: false
+          name: "Release ${{ steps.version.dateversion }}"
+          generate_release_notes: true
 
       - name: Updating updater xml Version
         id: update-xml-version
@@ -63,18 +74,7 @@ jobs:
         with:
           filepath: "update.xml"
           xpath: "//item/url"
-          replace: ${{ steps.upload-release-asset.outputs.browser_download_url }}
-
-      - name: Generate Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ExcelCombinator_${{ steps.version.dateversion }}.zip
-          tag_name: ${{ steps.version.dateversion }}
-          draft: false
-          prerelease: false
-          name: "Release ${{ steps.version.dateversion }}"
-          generate_release_notes: true
+          replace: ${{ steps.create_release.outputs.url }}
       
       - name: Commit and push changes
         run: |
