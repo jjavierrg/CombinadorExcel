@@ -15,11 +15,11 @@ jobs:
       MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
       
     steps:
-      - name: Get current date # get the date of the build
-        id: date
+      - name: Generate version number
+        id: version
         run: |
-          echo "::set-output name=date::$(date +'%y-%m-%d-%H%M')"
-          echo "::set-output name=version::$(date +'%y.%m.%d.%H%M')"
+          echo "dateversion=$(date +'%y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
+          echo "version=$(date +'%y.%m.%d.%H%M')" >> $GITHUB_OUTPUT
         
       - name: Checkout Git Project
         uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
         uses: dannevesdantas/set-version-assemblyinfo@v.1.0.0
         with:
           path: '${{ github.workspace }}/ExcelCombinator/Properties'
-          version: ${{ steps.date.outputs.version }}
+          version: ${{ steps.version.outputs.version }}
 
       - name: Compile Solution
         shell: cmd
@@ -47,33 +47,33 @@ jobs:
           
       - name: zip release artifact
         shell: pwsh
-        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.date.outputs.date }}.zip
+        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.dateversion }}.zip
 
       - name: Generate Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: ExcelCombinator_${{ steps.date.outputs.date }}.zip
-          tag_name: ${{ steps.date.outputs.date }}
+          files: ExcelCombinator_${{ steps.version.dateversion }}.zip
+          tag_name: ${{ steps.version.dateversion }}
           draft: false
           prerelease: false
-          name: ExcelCombinator_${{ steps.date.outputs.date }}
+          name: ExcelCombinator_${{ steps.version.dateversion }}
           generate_release_notes: true
 
       - name: Updating updater xml Version
         id: updater-xml-version
         uses: rvolo/xml-replace-action@v0.2
         with:
-          filepath: "update.xml"
-          xpath: "//item/version/text()"
-          replace: ${{ steps.date.outputs.version }}
+          filepath: "updater.xml"
+          xpath: "//item/version"
+          replace: ${{ steps.version.outputs.version }}
           
       - name: Updating updater xml Url
         id: updater-xml-url
         uses: rvolo/xml-replace-action@v0.2
         with:
           filepath: "update.xml"
-          xpath: "//item/url/text()"
+          xpath: "//item/url"
           replace: ${{ steps.upload-release-asset.outputs.browser_download_url }}
       
       - name: Commit and push changes
@@ -81,7 +81,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "[skip ci] Bump version to ${{ steps.date.outputs.version }}"
+          git commit -m "[skip ci] Bump version to ${{ steps.version.outputs.version }}"
           git push
 
         
