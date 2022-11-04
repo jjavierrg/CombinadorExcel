@@ -68,6 +68,14 @@ jobs:
           name: 'Release ${{ steps.version.outputs.dateversion }}'
           generate_release_notes: true
 
+      - name: Url to release
+        id: release_url
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+            source: ${{ steps.create_release.outputs.url }}
+            find: '/tag/'
+            replace: '/download/'
+
       - name: Updating updater xml Version
         id: update-xml-version
         uses: rvolo/xml-replace-action@v0.2
@@ -82,7 +90,7 @@ jobs:
         with:
           filepath: 'update.xml'
           xpath: '//item/url'
-          replace: '${{ steps.create_release.outputs.url }}/${{ steps.zip_release.outputs.zip_file }}'
+          replace: '${{ steps.release_url.outputs.value }}/${{ steps.zip_release.outputs.zip_file }}'
 
       - name: Commit and push changes
         run: |
