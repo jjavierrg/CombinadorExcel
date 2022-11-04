@@ -18,8 +18,8 @@ jobs:
       - name: Generate version number
         id: version
         run: |
-          echo "dateversion=$(date +'%y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
-          echo "version=$(date +'%y.%m.%d.%H%M')" >> $GITHUB_OUTPUT
+          "dateversion=$(date +'%y-%m-%d-%H%M')" >> $env:GITHUB_OUTPUT
+          "version=$(date +'%y.%m.%d.%H%M')" >> $env:GITHUB_OUTPUT
         
       - name: Checkout Git Project
         uses: actions/checkout@v3
@@ -49,17 +49,6 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.dateversion }}.zip
 
-      - name: Generate Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ExcelCombinator_${{ steps.version.dateversion }}.zip
-          tag_name: ${{ steps.version.dateversion }}
-          draft: false
-          prerelease: false
-          name: ExcelCombinator_${{ steps.version.dateversion }}
-          generate_release_notes: true
-
       - name: Updating updater xml Version
         id: updater-xml-version
         uses: rvolo/xml-replace-action@v0.2
@@ -75,6 +64,17 @@ jobs:
           filepath: "update.xml"
           xpath: "//item/url"
           replace: ${{ steps.upload-release-asset.outputs.browser_download_url }}
+
+      - name: Generate Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ExcelCombinator_${{ steps.version.dateversion }}.zip
+          tag_name: ${{ steps.version.dateversion }}
+          draft: false
+          prerelease: false
+          name: "Release ${{ steps.version.dateversion }}"
+          generate_release_notes: true
       
       - name: Commit and push changes
         run: |
