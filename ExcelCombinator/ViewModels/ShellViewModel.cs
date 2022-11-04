@@ -61,10 +61,9 @@ namespace ExcelCombinator.ViewModels
                 .Select(a => new AccentColorMenuData { CurrentAccent = a })
                 .ToList();
 
-            WindowCaption = getWindowTitle();
+            WindowCaption = GetWindowTitle();
 
-            AutoUpdater.ClearAppDirectory = true;
-            AutoUpdater.Start("https://raw.githubusercontent.com/Jjavierrg/CombinadorExcel/master/update.xml");
+            CheckForUpdate();
         }
 
         public IList<AccentColorMenuData> AccentColors { get; }
@@ -252,11 +251,18 @@ namespace ExcelCombinator.ViewModels
             NotifyOfPropertyChange(() => CanParse);
         }
 
-        private string getWindowTitle()
+        private string GetWindowTitle()
         {
             var name = Assembly.GetExecutingAssembly().GetName().Name;
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return $"{name} - v:{version}";
+        }
+
+        private void CheckForUpdate()
+        {
+            AutoUpdater.ClearAppDirectory = true;
+            AutoUpdater.RunUpdateAsAdmin = false;
+            AutoUpdater.Start("https://raw.githubusercontent.com/Jjavierrg/CombinadorExcel/master/update.xml");
         }
     }
 }
