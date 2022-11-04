@@ -30,7 +30,7 @@ jobs:
       - name: Restore nuget packages
         run: nuget restore ${{ env.SOLUTION_FILE }}
         
-      - name: set-version-assemblyinfo
+      - name: Change version number in Assembly
         uses: dannevesdantas/set-version-assemblyinfo@v.1.0.0
         with:
           path: '${{ github.workspace }}/ExcelCombinator/Properties'
@@ -47,18 +47,19 @@ jobs:
           
       - name: zip release artifact
         shell: pwsh
-        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.dateversion }}.zip        
+        run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.version.outputs.dateversion }}.zip        
 
       - name: Generate Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: ExcelCombinator_${{ steps.version.dateversion }}.zip
-          tag_name: ${{ steps.version.dateversion }}
+          files: ExcelCombinator_${{ steps.version.outputs.dateversion }}.zip
+          tag_name: ${{ steps.version.outputs.dateversion }}
           draft: false
           prerelease: false
-          name: "Release ${{ steps.version.dateversion }}"
+          name: "Release ${{ steps.version.outputs.dateversion }}"
           generate_release_notes: true
+
 
       - name: Updating updater xml Version
         id: update-xml-version
