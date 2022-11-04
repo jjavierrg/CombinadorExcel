@@ -23,14 +23,6 @@ jobs:
         
       - name: Checkout Git Project
         uses: actions/checkout@v3
-
-      - name: Updating updater xml Version
-        id: update-xml-test
-        uses: rvolo/xml-replace-action@v0.2
-        with:
-          filepath: "update.xml"
-          xpath: "//item/version"
-          replace: ${{ steps.version.outputs.version }}
         
       - name: Use Nuget
         uses: nuget/setup-nuget@v1
@@ -61,7 +53,7 @@ jobs:
         id: update-xml-version
         uses: rvolo/xml-replace-action@v0.2
         with:
-          filepath: "updater.xml"
+          filepath: "update.xml"
           xpath: "//item/version"
           replace: ${{ steps.version.outputs.version }}
           
