@@ -17,16 +17,24 @@ jobs:
     steps:
       - name: Get current date # get the date of the build
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: |
+          echo "::set-output name=date::$(date +'%y-%m-%d-%H%M')"
+          echo "::set-output name=version::$(date +'%y.%m.%d.%H%M')"
         
       - name: Checkout Git Project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Use Nuget
         uses: nuget/setup-nuget@v1
 
       - name: Restore nuget packages
         run: nuget restore ${{ env.SOLUTION_FILE }}
+        
+      - name: set-version-assemblyinfo
+        uses: dannevesdantas/set-version-assemblyinfo@v.1.0.0
+        with:
+          path: '${{ github.workspace }}/ExcelCombinator/Properties'
+          version: ${{ steps.date.outputs.version }}
 
       - name: Compile Solution
         shell: cmd
@@ -36,36 +44,46 @@ jobs:
         run: |
           rm .\${{ env.RELEASE_FOLDER }}\*.pdb
           rm .\${{ env.RELEASE_FOLDER }}\*.xml
-        
-      - name: Publish artifact
-        uses: actions/upload-artifact@v3
-        with: 
-          name: ExcelCombinator_${{ steps.date.outputs.date }}
-          path: ${{ env.RELEASE_FOLDER }}
-          retention-days: 5
           
       - name: zip release artifact
         shell: pwsh
         run: Compress-Archive -Path .\${{ env.RELEASE_FOLDER }}\* -DestinationPath ExcelCombinator_${{ steps.date.outputs.date }}.zip
-          
-      - name: Create Release
+
+      - name: Generate Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
+          files: ExcelCombinator_${{ steps.date.outputs.date }}.zip
           tag_name: ${{ steps.date.outputs.date }}
-          release_name: Release ${{ steps.date.outputs.date }}
           draft: false
           prerelease: false
-          
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ExcelCombinator_${{ steps.date.outputs.date }}
+          generate_release_notes: true
+
+      - name: Updating updater xml Version
+        id: updater-xml-version
+        uses: rvolo/xml-replace-action@v0.2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ExcelCombinator_${{ steps.date.outputs.date }}.zip
-          asset_name: ExcelCombinator_${{ steps.date.outputs.date }}.zip
-          asset_content_type: application/zip
+          filepath: "update.xml"
+          xpath: "//item/version/text()"
+          replace: ${{ steps.date.outputs.version }}
+          
+      - name: Updating updater xml Url
+        id: updater-xml-url
+        uses: rvolo/xml-replace-action@v0.2
+        with:
+          filepath: "update.xml"
+          xpath: "//item/url/text()"
+          replace: ${{ steps.upload-release-asset.outputs.browser_download_url }}
+      
+      - name: Commit and push changes
+        uses: actions/checkout@v3
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "[skip ci] Bump version to ${{ steps.date.outputs.version }}"
+          git push
+
+        
+

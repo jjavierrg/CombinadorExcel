@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using AutoUpdaterDotNET;
 using Caliburn.Micro;
 using ExcelCombinator.Core;
 using ExcelCombinator.CoreHelpers;
@@ -43,6 +45,7 @@ namespace ExcelCombinator.ViewModels
         private readonly IParseMotor _motor;
         private bool _normalizeKeys = true;
 
+
         public ShellViewModel(IExcelViewer originExcelViewerVm, IExcelViewer destinyExcelViewerVm, IEventAggregator eventAggregator, IParseMotor motor)
         {
             OriginExcelViewerVm = originExcelViewerVm;
@@ -54,14 +57,19 @@ namespace ExcelCombinator.ViewModels
             KeyRelations = new BindableCollection<IRelation>();
             ColumnsRelations = new BindableCollection<IRelation>();
 
-            this.AccentColors = ThemeManager.Accents
+            AccentColors = ThemeManager.Accents
                 .Select(a => new AccentColorMenuData { CurrentAccent = a })
                 .ToList();
+
+            WindowCaption = getWindowTitle();
+
+            AutoUpdater.ClearAppDirectory = true;
+            AutoUpdater.Start("https://raw.githubusercontent.com/Jjavierrg/CombinadorExcel/master/udpate.xml");
         }
 
         public IList<AccentColorMenuData> AccentColors { get; }
 
-        public string WindowCaption => "Combinador de excels";
+        public string WindowCaption { get; }
         public bool IsBusy
         {
             get { return _isBusy; }
@@ -242,6 +250,13 @@ namespace ExcelCombinator.ViewModels
         {
             ColumnsRelations.Clear();
             NotifyOfPropertyChange(() => CanParse);
+        }
+
+        private string getWindowTitle()
+        {
+            var name = Assembly.GetExecutingAssembly().GetName().Name;
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return $"{name} - v:{version}";
         }
     }
 }
