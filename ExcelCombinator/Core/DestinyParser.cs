@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Caliburn.Micro;
@@ -8,9 +9,9 @@ using OfficeOpenXml;
 
 namespace ExcelCombinator.Core
 {
-    public class DestinyParser: Parser, IDestinyParser
+    public class DestinyParser : Parser, IDestinyParser
     {
-        public DestinyParser(IEventAggregator eventAggregator) : base(eventAggregator) { }
+        public DestinyParser(IEventAggregator eventAggregator, INormalizer normalizer) : base(eventAggregator, normalizer) { }
 
         public bool Process(IDictionary<IKey, IDictionary<string, object>> values)
         {
@@ -37,7 +38,13 @@ namespace ExcelCombinator.Core
                         try
                         {
                             foreach (var keyColumn in KeysColumns)
-                                key.AddKeyValue(excelWorksheet.Cells[keyColumn.Destiny + rowNum].GetValue<string>());
+                            {
+                                var keyVal = excelWorksheet.Cells[keyColumn.Destiny + rowNum].GetValue<string>();
+                                if (NormalizeKeys)
+                                    keyVal = _normalizer.Normalize(keyVal);
+
+                                key.AddKeyValue(keyVal);
+                            }
                         }
                         catch (Exception)
                         {

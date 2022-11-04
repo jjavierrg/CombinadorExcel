@@ -41,6 +41,7 @@ namespace ExcelCombinator.ViewModels
         private string _destinyColumn;
         private readonly IEventAggregator _eventAggregator;
         private readonly IParseMotor _motor;
+        private bool _normalizeKeys = true;
 
         public ShellViewModel(IExcelViewer originExcelViewerVm, IExcelViewer destinyExcelViewerVm, IEventAggregator eventAggregator, IParseMotor motor)
         {
@@ -97,6 +98,15 @@ namespace ExcelCombinator.ViewModels
                 _destinyColumn = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => CanAddRelation);
+            }
+        }
+        public bool NormalizeKeys
+        {
+            get { return _normalizeKeys; }
+            set
+            {
+                _normalizeKeys = value;
+                NotifyOfPropertyChange();
             }
         }
 
@@ -194,7 +204,7 @@ namespace ExcelCombinator.ViewModels
 
         public async Task Parse()
         {
-            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations);
+            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, _normalizeKeys);
             if (!result)
                 return;
 

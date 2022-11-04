@@ -13,7 +13,7 @@ namespace ExcelCombinator.Core
         private Dictionary<IKey, IDictionary<string, object>> _values = new Dictionary<IKey, IDictionary<string, object>>();
         public IDictionary<IKey, IDictionary<string, object>> Values => _values;
 
-        public OriginParser(IEventAggregator eventAggregator) : base(eventAggregator) { }
+        public OriginParser(IEventAggregator eventAggregator, INormalizer normalizer) : base(eventAggregator, normalizer) { }
 
         public bool Parse()
         {
@@ -42,7 +42,13 @@ namespace ExcelCombinator.Core
                         try
                         {
                             foreach (var keyColumn in KeysColumns)
-                                key.AddKeyValue(excelWorksheet.Cells[keyColumn.Origin + rowNum].GetValue<string>());
+                            {
+                                var KeyVal = excelWorksheet.Cells[keyColumn.Origin + rowNum].GetValue<string>();
+                                if (NormalizeKeys)
+                                    KeyVal = _normalizer.Normalize(KeyVal);
+
+                                key.AddKeyValue(KeyVal);
+                            }
 
                             if (!_values.ContainsKey(key))
                                 _values.Add(key, new Dictionary<string, object>());

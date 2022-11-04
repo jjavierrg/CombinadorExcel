@@ -89,6 +89,8 @@
     <Compile Include="CoreHelpers\BusyMessage.cs" />
     <Compile Include="CoreHelpers\Constants.cs" />
     <Compile Include="Core\ColumnRelations.cs" />
+    <Compile Include="Core\Normalizer.cs" />
+    <Compile Include="Interfaces\INormalizer.cs" />
     <Compile Include="Core\ParserMotor.cs" />
     <Compile Include="Core\Parser.cs" />
     <Compile Include="Core\DestinyParser.cs" />

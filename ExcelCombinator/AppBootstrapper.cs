@@ -36,6 +36,7 @@ namespace ExcelCombinator
             _container.Singleton<IParseMotor, ParserMotor>();
             _container.PerRequest<IOriginParser, OriginParser>();
             _container.PerRequest<IDestinyParser, DestinyParser>();
+            _container.PerRequest<INormalizer, Normalizer>();
             _container.PerRequest<IKey, Key>();
         }
 

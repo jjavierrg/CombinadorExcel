@@ -15,7 +15,7 @@ namespace ExcelCombinator.Core
             _destinyParser = destinyParser;
         }
 
-        public async Task<bool> Parse(string originPath, string originSheet, string destinyPath, string destinySheet, IEnumerable<IRelation> columns, IEnumerable<IRelation> keys)
+        public async Task<bool> Parse(string originPath, string originSheet, string destinyPath, string destinySheet, IEnumerable<IRelation> columns, IEnumerable<IRelation> keys, bool normalizeKeys)
         {
             return await Task.Run<bool>(() =>
             {
@@ -23,6 +23,7 @@ namespace ExcelCombinator.Core
                 _originParser.SheetName = originSheet;
                 _originParser.Columns = columns;
                 _originParser.KeysColumns = keys;
+                _originParser.NormalizeKeys = normalizeKeys;
 
                 if (!_originParser.Parse()) return false;
 
@@ -30,6 +31,7 @@ namespace ExcelCombinator.Core
                 _destinyParser.SheetName = destinySheet;
                 _destinyParser.Columns = columns;
                 _destinyParser.KeysColumns = keys;
+                _destinyParser.NormalizeKeys = normalizeKeys;
                 return _destinyParser.Process(_originParser.Values);
             });
         }

@@ -45,7 +45,7 @@ namespace ExcelCombinator.Core
         public void AddKeyValues(IEnumerable<string> values)
         {
             foreach (var value in values)
-                Keys.Add(value);
+                AddKeyValue(value);
         }
     }
 }

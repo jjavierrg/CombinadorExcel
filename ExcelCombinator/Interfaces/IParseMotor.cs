@@ -5,6 +5,6 @@ namespace ExcelCombinator.Interfaces
 {
     public interface IParseMotor
     {
-        Task<bool> Parse(string originPath, string originSheet, string destinyPath, string destinySheet, IEnumerable<IRelation> columns, IEnumerable<IRelation> keys);
+        Task<bool> Parse(string originPath, string originSheet, string destinyPath, string destinySheet, IEnumerable<IRelation> columns, IEnumerable<IRelation> keys, bool normalize);
     }
 }

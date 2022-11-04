@@ -50,7 +50,16 @@
                 <Label Grid.Row="0" Content="Campos a completar" Style="{DynamicResource TitleStyle}" />
                 <ListBox Grid.Row="2" ItemsSource="{Binding ColumnsRelations}" Style="{DynamicResource RelationListbox}" />
                 <Separator Grid.Row="1" />
-                <Label Grid.Row="3" Content="Campos de enlace" Style="{DynamicResource TitleStyle}" />
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Campos de enlace" Style="{DynamicResource TitleStyle}"/>
+                    <TextBlock Grid.Column="1" Style="{DynamicResource LabelStyle}" Text="Normalizar" />
+                    <mah:ToggleSwitchButton Grid.Column="2" IsChecked="{Binding NormalizeKeys}" />
+                </Grid>
                 <Separator Grid.Row="4" />
                 <ListBox Grid.Row="5" ItemsSource="{Binding KeyRelations}" Style="{DynamicResource RelationListbox}" />
                 <Grid Grid.Row="6">
