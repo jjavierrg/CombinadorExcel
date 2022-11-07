@@ -76,7 +76,7 @@ jobs:
         id: release_url
         run: |
           $url = "${{ steps.create_release.outputs.url }}" -replace "/tag/", "/download/"
-          echo "url=$url" >> $env:GITHUB_ENV
+          echo "downloadurl=$url" >> $env:GITHUB_ENV
           echo "Url: $url"
 
       - name: Updating updater xml Version
@@ -93,7 +93,7 @@ jobs:
         with:
           filepath: 'update.xml'
           xpath: '//item/url'
-          replace: '${{ steps.release_url.outputs.url }}/${{ steps.zip_release.outputs.zip_file }}'
+          replace: '${{ steps.release_url.outputs.downloadurl }}/${{ steps.zip_release.outputs.zip_file }}'
 
       - name: Commit and push changes
         run: |
