@@ -21,7 +21,7 @@ jobs:
           $version = (Get-Date -Format "yy.MM.dd.HHmm")
           $dashVersion = $version -replace '\.', '-'
           "dateversion=$dashVersion" >> $env:GITHUB_OUTPUT
-          "version=$version >> $env:GITHUB_OUTPUT
+          "version=$version" >> $env:GITHUB_OUTPUT
           echo version = $version
           echo dashVersion = $dashVersion
 
