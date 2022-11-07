@@ -122,19 +122,16 @@ namespace ExcelCombinator.ViewModels
         {
             get
             {
-                //if (KeyRelations == null || !KeyRelations.Any()) return false;
-                //if (ColumnsRelations == null || !ColumnsRelations.Any()) return false;
-                //if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
-                //if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
+                if (KeyRelations == null || !KeyRelations.Any()) return false;
+                if (ColumnsRelations == null || !ColumnsRelations.Any()) return false;
+                if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
+                if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
 
                 return true;
             }
         }
 
-        public ContextOption[] ContextOptions { get; } = new ContextOption[]
-        {
-            new ContextOption { Text ="Normalizar datos de campos", IsChecked = true }
-        };
+        public IParserOptions OriginParserOptions { get; set; } = new ParserOptions { NormalizeFields = true };
 
         public IExcelViewer OriginExcelViewerVm { get; }
         public IExcelViewer DestinyExcelViewerVm { get; }
@@ -216,12 +213,7 @@ namespace ExcelCombinator.ViewModels
 
         public async Task Parse()
         {
-            var options = new ParserOptions
-            {
-                NormalizeFields = ContextOptions[0].IsChecked
-            };
-
-            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, options);
+            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, OriginParserOptions);
             if (!result)
                 return;
 

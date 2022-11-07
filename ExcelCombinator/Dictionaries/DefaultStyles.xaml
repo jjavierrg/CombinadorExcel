@@ -44,4 +44,8 @@
     <Style TargetType="Separator" BasedOn="{StaticResource {x:Type Separator}}">
         <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
     </Style>
+
+    <Style TargetType="Menu" BasedOn="{StaticResource {x:Type Menu}}">
+        <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}" />
+    </Style>
 </ResourceDictionary>

@@ -104,7 +104,6 @@
     <Compile Include="Controls\BusyIndicator.cs" />
     <Compile Include="CoreHelpers\BusyMessage.cs" />
     <Compile Include="CoreHelpers\Constants.cs" />
-    <Compile Include="Core\ContextOption.cs" />
     <Compile Include="Core\ColumnRelations.cs" />
     <Compile Include="Core\Normalizer.cs" />
     <Compile Include="Interfaces\INormalizer.cs" />
