@@ -76,7 +76,7 @@ jobs:
         id: release_url
         run: |
           $url = "${{ steps.create_release.outputs.url }}" -replace "/tag/", "/download/"
-          echo "downloadurl=$url" >> $env:GITHUB_ENV
+          "downloadurl=$url" >> $env:GITHUB_ENV
           echo "Url: $url"
 
       - name: Updating updater xml Version
