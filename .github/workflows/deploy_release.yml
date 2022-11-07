@@ -18,9 +18,9 @@ jobs:
       - name: Generate version number
         id: version
         run: |
-          $version = (Get-Date -Format "yy.MM.dd.HHmm")
+          $version = (Get-Date -Format "yyyy.MM.dd.HHmm")
           $dashVersion = $version -replace '\.', '-'
-          "dateversion=$dashVersion" >> $env:GITHUB_OUTPUT
+          "dashedversion=$dashVersion" >> $env:GITHUB_OUTPUT
           "version=$version" >> $env:GITHUB_OUTPUT
           echo "version: $version"
           echo "dashVersion: $dashVersion"
@@ -28,7 +28,7 @@ jobs:
       - name: Generating name for release
         id: release_name
         run: |
-          "release_name=ExcelCombinator_${{ steps.version.outputs.dateversion }}" >> $env:GITHUB_OUTPUT
+          "release_name=ExcelCombinator_${{ steps.version.outputs.dashedversion }}" >> $env:GITHUB_OUTPUT
 
       - name: Checkout Git Project
         uses: actions/checkout@v3
@@ -66,10 +66,10 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.zip_release.outputs.zip_file }}
-          tag_name: ${{ steps.version.outputs.dateversion }}
+          tag_name: ${{ steps.version.outputs.dashedversion }}
           draft: false
           prerelease: false
-          name: 'Release ${{ steps.version.outputs.dateversion }}'
+          name: 'Release ${{ steps.version.outputs.dashedversion }}'
           generate_release_notes: true
 
       - name: Url to release
