@@ -5,7 +5,9 @@
                     xmlns:controls="clr-namespace:ExcelCombinator.Controls"
                     xmlns:cal="http://www.caliburnproject.org"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:interfaces="clr-namespace:ExcelCombinator.Interfaces">
+                    xmlns:interfaces="clr-namespace:ExcelCombinator.Interfaces"
+                    xmlns:core="clr-namespace:ExcelCombinator.Core"
+                    >
     <!--Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
@@ -39,6 +41,7 @@
         <Setter Property="cal:Message.Attach" Value="ChangeAccent" />
     </Style>
 
+    <!--Lista de relaciones-->
     <Style x:Key="RelationListbox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
@@ -65,8 +68,23 @@
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                     <Setter Property="Focusable" Value="False"/>
                 </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Menu de opciones-->
+    <Style x:Key="ContextMenuStyle" TargetType="mah:DropDownButton" BasedOn="{StaticResource {x:Type mah:DropDownButton}}">
+        <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}" />
+        <Setter Property="ArrowBrush" Value="{DynamicResource AccentColorBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate DataType="{x:Type core:ContextOption}">
+                    <MenuItem x:Name="menu_item" IsCheckable="True" IsChecked="{Binding IsChecked, Mode=TwoWay}" Header="{Binding Text}" Background="Transparent" Padding="0"></MenuItem>
+                </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>

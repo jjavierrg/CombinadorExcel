@@ -40,7 +40,7 @@ namespace ExcelCombinator.Core
                             foreach (var keyColumn in KeysColumns)
                             {
                                 var keyVal = excelWorksheet.Cells[keyColumn.Destiny + rowNum].GetValue<string>();
-                                if (NormalizeKeys)
+                                if (ParseOptions.NormalizeFields)
                                     keyVal = _normalizer.Normalize(keyVal);
 
                                 key.AddKeyValue(keyVal);

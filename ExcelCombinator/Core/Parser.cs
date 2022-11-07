@@ -7,13 +7,20 @@ using ExcelCombinator.Interfaces;
 
 namespace ExcelCombinator.Core
 {
+
+    public class ParserOptions : IParserOptions
+    {
+        public bool NormalizeFields { get; set; }
+    }
+
     public class Parser : IParser
     {
         public IEnumerable<IRelation> Columns { get; set; }
         public IEnumerable<IRelation> KeysColumns { get; set; }
         public string FilePath { get; set; }
         public string SheetName { get; set; }
-        public bool NormalizeKeys { get; set; }
+
+        public IParserOptions ParseOptions { get; set; }
 
         private readonly IEventAggregator _eventAggregator;
         protected readonly INormalizer _normalizer;
@@ -28,7 +35,7 @@ namespace ExcelCombinator.Core
 
         protected void NotifyIsBusy(bool value, string message)
         {
-            _eventAggregator.PublishOnUIThread(new BusyMessage {IsBusy = value, Message = message});
+            _eventAggregator.PublishOnUIThread(new BusyMessage { IsBusy = value, Message = message });
         }
 
         protected void NotifyException(Exception ex)

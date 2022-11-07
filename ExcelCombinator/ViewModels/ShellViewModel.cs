@@ -122,14 +122,19 @@ namespace ExcelCombinator.ViewModels
         {
             get
             {
-                if (KeyRelations == null || !KeyRelations.Any()) return false;
-                if (ColumnsRelations == null || !ColumnsRelations.Any()) return false;
-                if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
-                if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
+                //if (KeyRelations == null || !KeyRelations.Any()) return false;
+                //if (ColumnsRelations == null || !ColumnsRelations.Any()) return false;
+                //if (string.IsNullOrEmpty(OriginExcelViewerVm?.Path)) return false;
+                //if (string.IsNullOrEmpty(DestinyExcelViewerVm?.Path)) return false;
 
                 return true;
             }
         }
+
+        public ContextOption[] ContextOptions { get; } = new ContextOption[]
+        {
+            new ContextOption { Text ="Normalizar datos de campos", IsChecked = true }
+        };
 
         public IExcelViewer OriginExcelViewerVm { get; }
         public IExcelViewer DestinyExcelViewerVm { get; }
@@ -211,18 +216,23 @@ namespace ExcelCombinator.ViewModels
 
         public async Task Parse()
         {
-            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, _normalizeKeys);
+            var options = new ParserOptions
+            {
+                NormalizeFields = ContextOptions[0].IsChecked
+            };
+
+            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, options);
             if (!result)
                 return;
 
-            var options = new MetroDialogSettings
+            var dialogOptions = new MetroDialogSettings
             {
                 NegativeButtonText = "Aceptar",
                 AffirmativeButtonText = "Abrir excel destino",
                 DefaultButtonFocus = MessageDialogResult.Affirmative
             };
 
-            var openFile = DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito.", MessageDialogStyle.AffirmativeAndNegative, options);
+            var openFile = DialogCoordinator.Instance.ShowModalMessageExternal(this, "Proceso Completado", "Proceso completado con éxito.", MessageDialogStyle.AffirmativeAndNegative, dialogOptions);
             if (openFile == MessageDialogResult.Affirmative)
                 DestinyExcelViewerVm.OpenFile();
         }

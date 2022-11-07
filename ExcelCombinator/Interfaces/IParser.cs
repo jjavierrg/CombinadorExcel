@@ -8,6 +8,6 @@ namespace ExcelCombinator.Interfaces
         IEnumerable<IRelation> KeysColumns { get; set; }
         string FilePath { get; set; }
         string SheetName { get; set; }
-        bool NormalizeKeys { get; set; }
+        IParserOptions ParseOptions { get; set; }
     }
 }
