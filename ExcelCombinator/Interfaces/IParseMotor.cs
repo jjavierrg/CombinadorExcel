@@ -6,7 +6,9 @@ namespace ExcelCombinator.Interfaces
 {
     public interface IParserOptions
     {
-        bool NormalizeFields { get; }
+        bool NormalizeFields { get; set; }
+        bool RequireAllKeys { get; set; }
+        bool ClearColumnIfNullMatch { get; set; }
     }
 
     public interface IParseMotor

@@ -47,7 +47,18 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Content="Campos a completar" Style="{DynamicResource TitleStyle}" />
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Campos a completar" Style="{DynamicResource TitleStyle}"/>
+                    <Menu Grid.Column="1" VerticalAlignment="Bottom" BorderThickness="0" FlowDirection="RightToLeft">
+                        <MenuItem Header="opciones" DataContext="{Binding ParserOptions}">
+                            <MenuItem Header="Traspasar valores nulos si hay coincidencia" IsCheckable="True" IsChecked="{Binding ClearColumnIfNullMatch}" />
+                        </MenuItem>
+                    </Menu>
+                </Grid>
                 <ListBox Grid.Row="2" ItemsSource="{Binding ColumnsRelations}" Style="{DynamicResource RelationListbox}" />
                 <Separator Grid.Row="1" />
                 <Grid Grid.Row="3">
@@ -57,8 +68,9 @@
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Content="Campos de enlace" Style="{DynamicResource TitleStyle}"/>
                     <Menu Grid.Column="1" VerticalAlignment="Bottom" BorderThickness="0" FlowDirection="RightToLeft">
-                        <MenuItem Header="opciones" DataContext="{Binding OriginParserOptions}">
+                        <MenuItem Header="opciones" DataContext="{Binding ParserOptions}">
                             <MenuItem Header="Normalizar valores de campos" IsCheckable="True" IsChecked="{Binding NormalizeFields}" />
+                            <MenuItem Header="Requerir todos los campos" IsCheckable="True" IsChecked="{Binding RequireAllKeys}" />
                         </MenuItem>
                     </Menu>
                 </Grid>

@@ -4,6 +4,6 @@ namespace ExcelCombinator.Interfaces
 {
     public interface IDestinyParser: IParser
     {
-        bool Process(IDictionary<IKey, IDictionary<string, object>> values);
+        bool Process(IDictionary<IKey, IList<IRelationEntry>> values);
     }
 }

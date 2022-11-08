@@ -2,9 +2,16 @@
 
 namespace ExcelCombinator.Interfaces
 {
+    public interface IRelationEntry
+    {
+        string OriginColumn { get; set; }
+        string DestinyColumn { get; set; }
+        object Value { get; set; }
+    }
+
     public interface IKey
     {
-        void AddKeyValue(string value);
-        void AddKeyValues(IEnumerable<string> values);
+        IList<IRelationEntry> Keys { get; }
+        void AddKeyValue(IRelationEntry value);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Caliburn.Micro;
 using ExcelCombinator.CoreHelpers;
 using ExcelCombinator.Interfaces;
+using OfficeOpenXml;
 
 namespace ExcelCombinator.Core
 {
@@ -11,6 +13,8 @@ namespace ExcelCombinator.Core
     public class ParserOptions : IParserOptions
     {
         public bool NormalizeFields { get; set; }
+        public bool RequireAllKeys { get; set; }
+        public bool ClearColumnIfNullMatch { get; set; }
     }
 
     public class Parser : IParser
@@ -31,6 +35,21 @@ namespace ExcelCombinator.Core
             KeysColumns = new ObservableCollection<IRelation>();
             _eventAggregator = eventAggregator;
             _normalizer = normalizer;
+        }
+
+        protected IRelationEntry ExtractRelationEntry(ExcelWorksheet excelWorksheet, IRelation relation, int rowNum)
+        {
+            var keyEntry = IoC.Get<IRelationEntry>();
+            keyEntry.OriginColumn = relation.Origin;
+            keyEntry.DestinyColumn = relation.Destiny;
+
+            var keyValue = excelWorksheet.Cells[relation.Origin + rowNum].GetValue<string>();
+
+            if (ParseOptions.NormalizeFields)
+                keyValue = _normalizer.Normalize(keyValue);
+
+            keyEntry.Value = keyValue;
+            return keyEntry;
         }
 
         protected void NotifyIsBusy(bool value, string message)

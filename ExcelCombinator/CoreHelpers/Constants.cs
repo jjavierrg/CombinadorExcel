@@ -12,6 +12,9 @@ namespace ExcelCombinator.CoreHelpers
         public const string SUBSTITUTION_COLUMN_RELATION_KEY = "SUBSTITUTION_COLUMN";
         public const string FILE_LOAD = "FILE_LOAD";
 
+        public const string AND_COMPARER = "AND_COMPARER";
+        public const string OR_COMPARER = "OR_COMPARER";
+
         public const int MAX_COLUMNS = 100;
     }
 }

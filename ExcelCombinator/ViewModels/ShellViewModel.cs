@@ -43,8 +43,6 @@ namespace ExcelCombinator.ViewModels
         private string _destinyColumn;
         private readonly IEventAggregator _eventAggregator;
         private readonly IParseMotor _motor;
-        private bool _normalizeKeys = true;
-
 
         public ShellViewModel(IExcelViewer originExcelViewerVm, IExcelViewer destinyExcelViewerVm, IEventAggregator eventAggregator, IParseMotor motor)
         {
@@ -62,6 +60,12 @@ namespace ExcelCombinator.ViewModels
                 .ToList();
 
             WindowCaption = GetWindowTitle();
+            ParserOptions = new ParserOptions
+            {
+                NormalizeFields = true,
+                RequireAllKeys = true,
+                ClearColumnIfNullMatch = true
+            };
 
             CheckForUpdate();
         }
@@ -107,15 +111,8 @@ namespace ExcelCombinator.ViewModels
                 NotifyOfPropertyChange(() => CanAddRelation);
             }
         }
-        public bool NormalizeKeys
-        {
-            get { return _normalizeKeys; }
-            set
-            {
-                _normalizeKeys = value;
-                NotifyOfPropertyChange();
-            }
-        }
+        public IParserOptions ParserOptions { get; }
+
 
         public bool CanAddRelation => !string.IsNullOrEmpty(OriginColumn) && !string.IsNullOrEmpty(DestinyColumn);
         public bool CanParse
@@ -130,8 +127,6 @@ namespace ExcelCombinator.ViewModels
                 return true;
             }
         }
-
-        public IParserOptions OriginParserOptions { get; set; } = new ParserOptions { NormalizeFields = true };
 
         public IExcelViewer OriginExcelViewerVm { get; }
         public IExcelViewer DestinyExcelViewerVm { get; }
@@ -213,7 +208,7 @@ namespace ExcelCombinator.ViewModels
 
         public async Task Parse()
         {
-            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, OriginParserOptions);
+            var result = await _motor.Parse(OriginExcelViewerVm.Path, OriginExcelViewerVm.SelectedSheet, DestinyExcelViewerVm.Path, DestinyExcelViewerVm.SelectedSheet, ColumnsRelations, KeyRelations, ParserOptions);
             if (!result)
                 return;
 

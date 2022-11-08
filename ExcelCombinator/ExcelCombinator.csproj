@@ -105,7 +105,9 @@
     <Compile Include="CoreHelpers\BusyMessage.cs" />
     <Compile Include="CoreHelpers\Constants.cs" />
     <Compile Include="Core\ColumnRelations.cs" />
+    <Compile Include="Core\ValueEntryFinder.cs" />
     <Compile Include="Core\Normalizer.cs" />
+    <Compile Include="Interfaces\IValueEntryFinder.cs" />
     <Compile Include="Interfaces\INormalizer.cs" />
     <Compile Include="Core\ParserMotor.cs" />
     <Compile Include="Core\Parser.cs" />

@@ -10,14 +10,14 @@ namespace ExcelCombinator.Core
 {
     public class OriginParser: Parser, IOriginParser
     {
-        private Dictionary<IKey, IDictionary<string, object>> _values = new Dictionary<IKey, IDictionary<string, object>>();
-        public IDictionary<IKey, IDictionary<string, object>> Values => _values;
+        private Dictionary<IKey, IList<IRelationEntry>> _values = new Dictionary<IKey, IList<IRelationEntry>>();
+        public IDictionary<IKey, IList<IRelationEntry>> Values => _values;
 
         public OriginParser(IEventAggregator eventAggregator, INormalizer normalizer) : base(eventAggregator, normalizer) { }
 
         public bool Parse()
         {
-            _values = new Dictionary<IKey, IDictionary<string, object>>();
+            _values = new Dictionary<IKey, IList<IRelationEntry>>();
 
             try
             {
@@ -43,20 +43,21 @@ namespace ExcelCombinator.Core
                         {
                             foreach (var keyColumn in KeysColumns)
                             {
-                                var KeyVal = excelWorksheet.Cells[keyColumn.Origin + rowNum].GetValue<string>();
-                                if (ParseOptions.NormalizeFields)
-                                    KeyVal = _normalizer.Normalize(KeyVal);
-
-                                key.AddKeyValue(KeyVal);
+                                var keyEntry = ExtractRelationEntry(excelWorksheet, keyColumn, rowNum);
+                                key.AddKeyValue(keyEntry);
                             }
 
                             if (!_values.ContainsKey(key))
-                                _values.Add(key, new Dictionary<string, object>());
+                                _values.Add(key, new List<IRelationEntry>());
 
                             foreach (var column in Columns)
                             {
-                                var value  = excelWorksheet.Cells[column.Origin + rowNum].Value;
-                                _values[key].Add(column.Origin, value);
+                                var valueEntry = IoC.Get<IRelationEntry>();
+                                valueEntry.OriginColumn = column.Origin;
+                                valueEntry.DestinyColumn = column.Destiny;
+                                valueEntry.Value = excelWorksheet.Cells[column.Origin + rowNum].Value;
+
+                                _values[key].Add(valueEntry);
                             }
                         }
                         catch (Exception)

@@ -37,6 +37,10 @@ namespace ExcelCombinator
             _container.PerRequest<IOriginParser, OriginParser>();
             _container.PerRequest<IDestinyParser, DestinyParser>();
             _container.PerRequest<INormalizer, Normalizer>();
+            _container.PerRequest<IRelationEntry, RelationEntry>();
+
+            _container.PerRequest<IValueEntryFinder, AndValueEntryFinder>(Constants.AND_COMPARER);
+            _container.PerRequest<IValueEntryFinder, OrValueEntryFinder>(Constants.OR_COMPARER);
             _container.PerRequest<IKey, Key>();
         }
 
