@@ -64,7 +64,7 @@ namespace ExcelCombinator.ViewModels
             {
                 NormalizeFields = true,
                 RequireAllKeys = true,
-                ClearColumnIfNullMatch = true
+                ClearColumnIfNullMatch = false
             };
 
             CheckForUpdate();
