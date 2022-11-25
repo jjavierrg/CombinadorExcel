@@ -43,7 +43,7 @@ namespace ExcelCombinator.Core
                         {
                             foreach (var keyColumn in KeysColumns)
                             {
-                                var keyEntry = ExtractRelationEntry(excelWorksheet, keyColumn, rowNum);
+                                var keyEntry = ExtractRelationEntry(excelWorksheet, keyColumn, rowNum, false);
                                 key.AddKeyValue(keyEntry);
                             }
                         }

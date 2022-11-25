@@ -37,13 +37,15 @@ namespace ExcelCombinator.Core
             _normalizer = normalizer;
         }
 
-        protected IRelationEntry ExtractRelationEntry(ExcelWorksheet excelWorksheet, IRelation relation, int rowNum)
+        protected IRelationEntry ExtractRelationEntry(ExcelWorksheet excelWorksheet, IRelation relation, int rowNum, bool extractFromOriginColumn = true)
         {
             var keyEntry = IoC.Get<IRelationEntry>();
             keyEntry.OriginColumn = relation.Origin;
             keyEntry.DestinyColumn = relation.Destiny;
 
-            var keyValue = excelWorksheet.Cells[relation.Origin + rowNum].GetValue<string>();
+            var column = extractFromOriginColumn ? relation.Origin : relation.Destiny;
+
+            var keyValue = excelWorksheet.Cells[column + rowNum].GetValue<string>();
 
             if (ParseOptions.NormalizeFields)
                 keyValue = _normalizer.Normalize(keyValue);
