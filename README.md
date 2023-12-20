@@ -7,7 +7,7 @@
 
 ## Descripción
 
-Este programa permite combinar vdatos de dos ficheros de Excel en uno solo. Para ello, se establecen los campos de enlace entre ambos ficheros y los campos que se desean combinar. Si una fila del fichero de origen tiene los mismos valores en los campos de enlace que una fila del fichero de destino, se copiarán los valores de los campos a combinar de la fila del fichero de origen a la fila del fichero de destino.
+Este programa permite combinar datos de dos ficheros de Excel en uno solo. Para ello, se establecen los campos de enlace entre ambos ficheros y los campos que se desean combinar. Si una fila del fichero de origen tiene los mismos valores en los campos de enlace que una fila del fichero de destino, se copiarán los valores de los campos a combinar de la fila del fichero de origen a la fila del fichero de destino.
 
 ## Instalación
 
@@ -20,7 +20,7 @@ Una vez descargado y descomprimido el fichero, ejecute el fichero `ExcelCombinat
 Aparecerá una ventana como la siguiente:
 ![Ventana del programa](docs/main-window.png)
 
-En la pestaña 'Origen' seleccione el fichero de Excel que contiene los datos que desea combinar. En la pestaña 'Destino' seleccione el fichero de Excel en el que desea combinar los datos. Tenga en cuenta que al fichero de destino se le incorparán los datos del fichero de origen cuyos valores de los campos de enlace establecidos coincidan.
+En la pestaña 'Origen' seleccione el fichero de Excel que contiene los datos que desea combinar. En la pestaña 'Destino' seleccione el fichero de Excel en el que desea combinar los datos. Tenga en cuenta que al fichero de destino se le incorporarán los datos del fichero de origen cuyos valores de los campos de enlace establecidos coincidan.
 
 Después de seleccionar los ficheros de origen y destino, seleccione las hojas de ambos ficheros que contienen los datos que desea combinar. El programa mostrará una vista previa de los datos que contiene cada hoja. Tenga en cuenta que el programa sólo permite combinar datos de una hoja de cada fichero.
 
